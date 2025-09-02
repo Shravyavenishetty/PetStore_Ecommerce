@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Complete UPI Payment - Pawverse{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <h2 class="mb-4">Complete Your UPI Payment</h2>
+  <p>Please use your preferred UPI app to scan the QR code or click the button below to open your UPI app.</p>
+
+  {% if qr_code_url %}
+  <div>
+    <img src="{{ qr_code_url }}" alt="UPI QR Code" class="img-fluid mb-3" style="max-width: 250px;">
+  </div>
+  {% endif %}
+
+  <p class="font-weight-bold">Or tap below to open your UPI app:</p>
+
+  <a href="{{ upi_uri }}" class="btn btn-success btn-lg mb-4 px-5" style="font-weight:600; letter-spacing:0.5px;" target="_blank" rel="noopener noreferrer">
+    <span style="vertical-align:middle;" class="fa fa-bolt mr-2"></span>
+    PAY VIA UPI APP
+  </a>
+
+  <p class="text-muted mb-4">If your app does not open automatically, please scan the QR code above or <a href="{{ upi_uri }}">click here</a> to open your UPI app manually.</p>
+
+  <form method="post" action="{% url 'shop:confirm_upi_payment' order_id=order_id %}">
+    {% csrf_token %}
+    <button class="btn btn-outline-primary btn-lg">I HAVE COMPLETED THE PAYMENT</button>
+  </form>
+
+  <p class="mt-4 text-muted">Please complete the payment within 15 minutes, or your order may be canceled.</p>
+</div>
+{% endblock %}

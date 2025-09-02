@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Search Results{% if query %} for "{{ query }}"{% endif %}</h2>
+
+  {% if not products and not pets and not stores %}
+    <p class="text-muted">No results found.</p>
+  {% endif %}
+
+  {% if stores %}
+    <h3 class="mt-4">Stores</h3>
+    <div class="list-group mb-4">
+      {% for store in stores %}
+        <a href="{% url 'shop:store_detail' store.pk %}" class="list-group-item list-group-item-action">
+          {{ store.name }}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if pets %}
+    <h3 class="mt-4">Pets</h3>
+    <div class="row g-4 mb-4">
+      {% for pet in pets %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <a href="{{ pet.get_absolute_url }}" class="card text-decoration-none shadow-sm">
+            {% if pet.image %}
+              <img src="{{ pet.image.url }}" alt="{{ pet.name }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            {% else %}
+              <img src="{% static 'images/pet_placeholder.png' %}" alt="{{ pet.name }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+              <h6 class="mb-0">{{ pet.name }}</h6>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if products %}
+    <h3 class="mt-4">Products</h3>
+    <div class="row g-4">
+      {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <a href="{{ product.get_absolute_url }}" class="card text-decoration-none shadow-sm">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            {% else %}
+              <img src="{% static 'images/product_placeholder.png' %}" alt="{{ product.name }}" class="card-img-top" style="height:180px; object-fit:cover;">
+            {% endif %}
+            <div class="card-body">
+              <h6 class="mb-0">{{ product.name }}</h6>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

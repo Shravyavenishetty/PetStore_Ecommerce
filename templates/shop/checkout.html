@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Checkout - Pawverse{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="mb-4">Checkout</h2>
+
+  <!-- Messages -->
+  {% if messages %}
+  <div>
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- Left: Shipping & Payment -->
+    <div class="col-md-7">
+      <div class="card p-4 mb-4 shadow-sm">
+        <h4>Shipping & Contact Information</h4>
+        <form method="post" action="{% url 'shop:process_order' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="buyerName">Full Name</label>
+            <input type="text" class="form-control" name="buyer_name" id="buyerName" placeholder="Your name" required>
+          </div>
+          <div class="form-group">
+            <label for="buyerEmail">Email Address</label>
+            <input type="email" class="form-control" name="email" id="buyerEmail" placeholder="Your email" required>
+          </div>
+          <div class="form-group">
+            <label for="buyerPhone">Phone Number</label>
+            <input type="tel" class="form-control" name="phone" id="buyerPhone" placeholder="+91 9876543210" required>
+          </div>
+          <div class="form-group">
+            <label for="shippingAddress">Shipping Address</label>
+            <textarea class="form-control" name="shipping_address" id="shippingAddress" rows="3" required placeholder="Street, City, Postal Code"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="paymentMethod">Payment Method</label>
+            <select class="form-control" name="payment_method" id="paymentMethod" required>
+              <option value="" disabled selected>Select payment method</option>
+              <option value="cod">Cash on Delivery</option>
+              <option value="netbanking">Net Banking</option>
+              <option value="card">Credit / Debit Card</option>
+              <option value="upi">UPI / Mobile Wallet</option>
+            </select>
+          </div>
+
+          <!-- UPI ID input visible only if UPI selected -->
+          <div class="form-group" id="upiIdGroup" style="display:none;">
+            <label for="upiId">Your UPI ID</label>
+            <input type="text" class="form-control" id="upiId" name="user_upi_id" placeholder="example@bank">
+            <small class="form-text text-muted">Enter your UPI ID to complete the payment.</small>
+          </div>
+
+          {% if is_single_item %}
+            <input type="hidden" name="is_single_item" value="True">
+            <input type="hidden" name="item_model" value="{{ item_model }}">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+          {% else %}
+            <input type="hidden" name="is_single_item" value="False">
+          {% endif %}
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Place Order</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div class="col-md-5">
+      <div class="card p-3 shadow-sm">
+        <h4>Order Summary</h4>
+        <hr>
+        {% if is_single_item %}
+          <div class="d-flex mb-3">
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width: 80px; height: 80px; object-fit: cover;" class="mr-3 rounded">
+            <div>
+              <h5>{{ item.name }}</h5>
+              <p>Qty: 1</p>
+              <p><strong>Price:</strong> ₹{{ item.price|floatformat:2 }}</p>
+            </div>
+          </div>
+          <hr>
+          <h5>Total: ₹{{ item.price|floatformat:2 }}</h5>
+        {% else %}
+          {% for cart_item in cart_items %}
+          <div class="d-flex mb-3">
+            <img src="{{ cart_item.content_object.image.url }}" alt="{{ cart_item.content_object.name }}" style="width: 80px; height: 80px; object-fit: cover;" class="mr-3 rounded">
+            <div>
+              <h5>{{ cart_item.content_object.name }}</h5>
+              <p>Qty: {{ cart_item.quantity }}</p>
+              <p><strong>Price:</strong> ₹{{ cart_item.subtotal|floatformat:2 }}</p>
+            </div>
+          </div>
+          {% endfor %}
+          <hr>
+          <h5>Total: ₹{{ total|floatformat:2 }}</h5>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const paymentMethodSelect = document.getElementById('paymentMethod');
+  const upiIdGroup = document.getElementById('upiIdGroup');
+
+  paymentMethodSelect.addEventListener('change', function() {
+    if (this.value === 'upi') {
+      upiIdGroup.style.display = 'block';
+      document.getElementById('upiId').required = true;
+    } else {
+      upiIdGroup.style.display = 'none';
+      document.getElementById('upiId').required = false;
+    }
+  });
+});
+</script>
+{% endblock %}

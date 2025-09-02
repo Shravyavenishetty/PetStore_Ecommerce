@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Pawverse{% endblock %}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    {% include "includes/navbar.html" %}
+    
+    {% block content %}{% endblock %}
+    
+    {% include "includes/footer.html" %}
+    
+    <div id="ftco-loader" class="show fullscreen">
+        <svg class="circular" width="48px" height="48px">
+            <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"></circle>
+            <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"></circle>
+        </svg>
+    </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+    <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/scrollax.min.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+    <script src="{% static 'js/google-map.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <!-- Bootstrap 5 JS Bundle, includes Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+    <!-- Sync cart and wishlist badge counts on all page views (including back/forward navigation) -->
+    <script>
+    // Utility function to update badge element
+    function updateBadge(badgeId, count) {
+        const badge = document.getElementById(badgeId);
+        if (!badge) return;
+        badge.textContent = count > 0 ? count : '';
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+
+    // Sync counts on pageshow event (includes back/forward navigation)
+    window.addEventListener('pageshow', () => {
+        // Fetch cart count
+        fetch("{% url 'carts:cart_count_api' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.count !== undefined) {
+                    updateBadge('cart-count', data.count);
+                    localStorage.setItem('cartItemCount', data.count);
+                }
+            }).catch(() => { /* optional error handling */ });
+
+        // Fetch wishlist count
+        fetch("{% url 'wishlist:wishlist_count_api' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.count !== undefined) {
+                    updateBadge('wishlist-count', data.count);
+                    localStorage.setItem('wishlistItemCount', data.count);
+                }
+            }).catch(() => { /* optional error handling */ });
+    });
+
+    // On DOMContentLoaded, set badge from localStorage instantly
+    document.addEventListener('DOMContentLoaded', () => {
+        const storedCartCount = localStorage.getItem('cartItemCount');
+        if(storedCartCount !== null){
+            updateBadge('cart-count', Number(storedCartCount));
+        }
+        const storedWishlistCount = localStorage.getItem('wishlistItemCount');
+        if(storedWishlistCount !== null){
+            updateBadge('wishlist-count', Number(storedWishlistCount));
+        }
+    });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

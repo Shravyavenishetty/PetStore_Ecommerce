@@ -1,0 +1,457 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero-wrap js-fullheight" style="background-image: url('{% static "images/bg_1.jpg" %}');" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center" data-scrollax-parent="true">
+      <div class="col-md-11 ftco-animate text-center">
+        <h1 class="mb-4">Highest Quality Care For Pets You'll Love</h1>
+        <p><a href="{% url 'shop:store' %}" class="btn btn-primary mr-md-4 py-3 px-4">Visit Pet Store <span class="ion-ios-arrow-forward"></span></a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Categories -->
+<section class="ftco-section bg-light ftco-no-pt">
+  <div class="container">
+    <div class="row justify-content-center pb-5 mb-3">
+      <div class="col-md-8 heading-section text-center ftco-animate">
+        <h2 class="mb-3 font-weight-bold">Our Popular Categories</h2>
+        <p class="lead text-muted">Explore the finest selections for your beloved pets - from pets to accessories, toys, and medicines</p>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Pet Store -->
+      <div class="col-md-3 col-sm-6 mb-4 ftco-animate">
+        <div class="category-block d-flex flex-column align-items-center text-center bg-white p-4 shadow rounded-lg h-100 transition-hover">
+          <a href="{% url 'shop:store' %}" class="img-wrap mb-3" style="background-image: url('{% static 'images/pet_store.jpg' %}'); width: 100%; height: 180px; background-size: cover; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);"></a>
+          <h4 class="font-weight-bold"><a href="{% url 'shop:store' %}" class="text-dark">Pet Store</a></h4>
+          <p class="text-muted">Find the perfect dog, cat, bird, fish, turtle or rabbit for your home from our extensive store.</p>
+          <a href="{% url 'shop:store' %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill">Shop Pets</a>
+        </div>
+      </div>
+      <!-- Pet Accessories -->
+      <div class="col-md-3 col-sm-6 mb-4 ftco-animate">
+        <div class="category-block d-flex flex-column align-items-center text-center bg-white p-4 shadow rounded-lg h-100 transition-hover">
+          <a href="{% url 'shop:product_list_by_category' 'accessories' %}" class="img-wrap mb-3" style="background-image: url('{% static 'images/pet_accessories.webp' %}'); width: 100%; height: 180px; background-size: cover; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);"></a>
+          <h4 class="font-weight-bold"><a href="{% url 'shop:product_list_by_category' 'accessories' %}" class="text-dark">Pet Accessories</a></h4>
+          <p class="text-muted">Collars, leashes, beds, clothing and all essentials to keep your pets stylish and comfortable.</p>
+          <a href="{% url 'shop:product_list_by_category' 'accessories' %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill">Browse Accessories</a>
+        </div>
+      </div>
+      <!-- Pet Toys -->
+      <div class="col-md-3 col-sm-6 mb-4 ftco-animate">
+        <div class="category-block d-flex flex-column align-items-center text-center bg-white p-4 shadow rounded-lg h-100 transition-hover">
+          <a href="{% url 'shop:product_list_by_category' 'toys' %}" class="img-wrap mb-3" style="background-image: url('{% static 'images/pet_toys.jpeg' %}'); width: 100%; height: 180px; background-size: cover; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);"></a>
+          <h4 class="font-weight-bold"><a href="{% url 'shop:product_list_by_category' 'toys' %}" class="text-dark">Pet Toys</a></h4>
+          <p class="text-muted">Stimulate your pet’s mind and body with our extensive range of fun toys available for all types of pets.</p>
+          <a href="{% url 'shop:product_list_by_category' 'toys' %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill">Shop Toys</a>
+        </div>
+      </div>
+      <!-- Pet Medicines -->
+      <div class="col-md-3 col-sm-6 mb-4 ftco-animate">
+        <div class="category-block d-flex flex-column align-items-center text-center bg-white p-4 shadow rounded-lg h-100 transition-hover">
+          <a href="{% url 'shop:product_list_by_category' 'medicines' %}" class="img-wrap mb-3" style="background-image: url('{% static 'images/pet_medicines.jpeg' %}'); width: 100%; height: 180px; background-size: cover; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);"></a>
+          <h4 class="font-weight-bold"><a href="{% url 'shop:product_list_by_category' 'medicines' %}" class="text-dark">Pet Medicines</a></h4>
+          <p class="text-muted">Ensure your pets stay healthy with high-quality medicines and supplements from trusted brands.</p>
+          <a href="{% url 'shop:product_list_by_category' 'medicines' %}" class="btn btn-outline-primary btn-sm mt-auto rounded-pill">Shop Medicines</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Why Choose Us Section -->
+<section class="ftco-section ftco-no-pt ftco-no-pb">
+  <div class="container">
+    <div class="row d-flex no-gutters">
+      <div class="col-md-5 d-flex">
+        <div class="img img-video d-flex align-self-stretch align-items-center justify-content-center justify-content-md-center mb-4 mb-sm-0" 
+             style="background-image:url('{% static 'images/about-1.jpg' %}');">
+        </div>
+      </div>
+      <div class="col-md-7 pl-md-5 py-md-5">
+        <div class="heading-section pt-md-5">
+          <h2 class="mb-4">Why Choose Dogstore?</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-6 services-2 w-100 d-flex">
+            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-stethoscope"></span></div>
+            <div class="text pl-3">
+              <h4>Expert Veterinary Care</h4>
+              <p>Our certified vets provide top-notch health and wellness care for your pets.</p>
+            </div>
+          </div>
+          <div class="col-md-6 services-2 w-100 d-flex">
+            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-customer-service"></span></div>
+            <div class="text pl-3">
+              <h4>24/7 Customer Support</h4>
+              <p>Our dedicated support team is available round the clock for all your questions and concerns.</p>
+            </div>
+          </div>
+          <div class="col-md-6 services-2 w-100 d-flex">
+            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-emergency-call"></span></div>
+            <div class="text pl-3">
+              <h4>Emergency Services</h4>
+              <p>Urgent veterinary services and advice anytime your pet needs it.</p>
+            </div>
+          </div>
+          <div class="col-md-6 services-2 w-100 d-flex">
+            <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-veterinarian"></span></div>
+            <div class="text pl-3">
+              <h4>Trusted Pet Care</h4>
+              <p>Trusted by thousands of pet owners with exceptional care quality.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FAQ Section -->
+<section class="ftco-section ftco-faqs">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 order-md-last">
+        <div class="img img-video d-flex align-self-stretch" 
+             style="background-image: url('{% static "images/about.jpg" %}');">
+          <a href="https://vimeo.com/45894" class="icon image-popup d-flex justify-content-center align-items-center">
+            <span class="fa fa-play"></span>
+          </a>
+        </div>
+        <div class="d-flex mt-3">
+          <div class="img img-2 mr-2" style="background-image: url('{% static "images/about-2.jpg" %}');"></div>
+          <div class="img img-2 ml-2" style="background-image: url('{% static "images/about-3.jpg" %}');"></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="heading-section mb-5">
+          <h2 class="mb-3">Frequently Asked Questions</h2>
+          <p>Find answers to common questions from pet lovers like you.</p>
+        </div>
+        <div class="accordion" id="faqAccordion" role="tablist" aria-multiselectable="true">
+          <div class="card">
+            <div class="card-header" id="faq1" role="tab">
+              <h2 class="mb-0">
+                <a class="d-block" data-toggle="collapse" href="#collapseFaq1" aria-expanded="true" aria-controls="collapseFaq1">
+                  How can I choose the right pet for my family?
+                </a>
+              </h2>
+            </div>
+            <div id="collapseFaq1" class="collapse show" role="tabpanel" aria-labelledby="faq1" data-parent="#faqAccordion">
+              <div class="card-body">
+                <p>Consider factors like your lifestyle, living space, time commitment, allergies, and what kind of companionship you desire. Our expert team can help guide you.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="faq2" role="tab">
+              <h2 class="mb-0">
+                <a class="collapsed d-block" data-toggle="collapse" href="#collapseFaq2" aria-expanded="false" aria-controls="collapseFaq2">
+                  What are the recommended care routines for new pets?
+                </a>
+              </h2>
+            </div>
+            <div id="collapseFaq2" class="collapse" role="tabpanel" aria-labelledby="faq2" data-parent="#faqAccordion">
+              <div class="card-body">
+                <p>Ensure proper nutrition, regular exercise, vaccinations, grooming, and veterinary check-ups. Our pet care packages include guidance and support for new owners.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="faq3" role="tab">
+              <h2 class="mb-0">
+                <a class="collapsed d-block" data-toggle="collapse" href="#collapseFaq3" aria-expanded="false" aria-controls="collapseFaq3">
+                  How do I purchase medicines and health products online?
+                </a>
+              </h2>
+            </div>
+            <div id="collapseFaq3" class="collapse" role="tabpanel" aria-labelledby="faq3" data-parent="#faqAccordion">
+              <div class="card-body">
+                <p>Visit our Pet Medicines section for a wide range of reliable and vetted health products. You can order online and get doorstep delivery with detailed guidance.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" id="faq4" role="tab">
+              <h2 class="mb-0">
+                <a class="collapsed d-block" data-toggle="collapse" href="#collapseFaq4" aria-expanded="false" aria-controls="collapseFaq4">
+                  What services does Dogstore offer besides sales?
+                </a>
+              </h2>
+            </div>
+            <div id="collapseFaq4" class="collapse" role="tabpanel" aria-labelledby="faq4" data-parent="#faqAccordion">
+              <div class="card-body">
+                <p>We offer grooming, daycare, veterinary support, emergency services, and consultation packages tailored to your pet’s needs.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="ftco-section testimony-section" style="background-image: url('{% static "images/bg_2.jpg" %}');">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row justify-content-center pb-4">
+      <div class="col-md-7 text-center heading-section ftco-animate">
+        <h2 class="mb-4">What our clients say</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="owl-carousel owl-theme">
+          <div class="item">
+            <div class="testimonial">
+              <p class="mb-4">Dogstore provided exceptional care and support for my new puppy. Highly recommended!</p>
+              <div class="client-info d-flex align-items-center">
+                <img src="{% static 'images/person_1.jpg' %}" alt="Client" class="rounded-circle mr-3" width="60" height="60">
+                <div>
+                  <span class="client-name">Roger Scott</span><br>
+          
+   <small class="text-muted">Pet Owner</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimonial">
+              <p class="mb-4">Amazing products and their support team answered all my questions promptly. My cat loves the new toys!</p>
+              <div class="client-info d-flex align-items-center">
+                <img src="{% static 'images/person_2.jpg' %}" alt="Client" class="rounded-circle mr-3" width="60" height="60">
+                <div>
+                  <span class="client-name">Emily Rose</span><br>
+                  <small class="text-muted">Cat Owner</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimonial">
+              <p class="mb-4">Professional veterinarians and great services, I always trust Dogstore with my pets’ health.</p>
+              <div class="client-info d-flex align-items-center">
+                <img src="{% static 'images/person_3.jpg' %}" alt="Client" class="rounded-circle mr-3" width="60" height="60">
+                <div>
+                  <span class="client-name">Mike Johnson</span><br>
+                  <small class="text-muted">Veterinary Client</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Add more testimonials as needed -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Packages / Pricing Section -->
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center pb-4">
+      <div class="col-md-7 text-center heading-section ftco-animate">
+        <h2>Our Packages</h2>
+        <p>Select a plan that suits your pet’s needs</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 ftco-animate">
+        <div class="pricing-wrap bg-white p-4 text-center rounded shadow">
+          <h3 class="mb-4">Basic Care</h3>
+          <span class="price">$49<span>/month</span></span>
+          <ul class="list-unstyled mt-4 mb-5">
+            <li><span class="fa fa-check"></span> Weekly Dog Walks</li>
+            <li><span class="fa fa-check"></span> Health Check-ups</li>
+            <li><span class="fa fa-check"></span> Grooming Sessions</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Choose Plan</a>
+        </div>
+      </div>
+      <div class="col-md-4 ftco-animate">
+        <div class="pricing-wrap bg-white p-4 text-center rounded shadow">
+          <h3 class="mb-4">Standard Care</h3>
+          <span class="price">$79<span>/month</span></span>
+          <ul class="list-unstyled mt-4 mb-5">
+            <li><span class="fa fa-check"></span> Daily Dog Walks</li>
+            <li><span class="fa fa-check"></span> Vaccination Reminders</li>
+            <li><span class="fa fa-check"></span> Emergency Support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Choose Plan</a>
+        </div>
+      </div>
+      <div class="col-md-4 ftco-animate">
+        <div class="pricing-wrap bg-white p-4 text-center rounded shadow">
+          <h3 class="mb-4">Premium Care</h3>
+          <span class="price">$109<span>/month</span></span>
+          <ul class="list-unstyled mt-4 mb-5">
+            <li><span class="fa fa-check"></span> 24/7 Veterinary Support</li>
+            <li><span class="fa fa-check"></span> Personalized Nutrition</li>
+            <li><span class="fa fa-check"></span> Spa and Grooming</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Choose Plan</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center pb-4">
+      <div class="col-md-7 text-center heading-section ftco-animate">
+        <h2>Our Pets Gallery</h2>
+        <p>Explore some of the adorable pets available in our store</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 ftco-animate">
+        <div class="work img d-flex align-items-end" style="background-image: url('{% static "images/gallery-1.jpg" %}');">
+          <a href="{% static 'images/gallery-1.jpg' %}" class="image-popup d-flex justify-content-center align-items-center">
+            <span class="fa fa-expand"></span>
+          </a>
+          <div class="desc text-center p-3 bg-white">
+            <span class="category">Dog</span>
+            <h2><a href="{% url 'shop:pet_detail' 1 %}">Labrador Retriever</a></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 ftco-animate">
+        <div class="work img d-flex align-items-end" style="background-image: url('{% static "images/gallery-2.jpg" %}');">
+          <a href="{% static 'images/gallery-2.jpg' %}" class="image-popup d-flex justify-content-center align-items-center">
+            <span class="fa fa-expand"></span>
+          </a>
+          <div class="desc text-center p-3 bg-white">
+            <span class="category">Cat</span>
+            <h2><a href="{% url 'shop:pet_detail' 2 %}">Persian Cat</a></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 ftco-animate">
+        <div class="work img d-flex align-items-end" style="background-image: url('{% static "images/gallery-3.jpg" %}');">
+          <a href="{% static 'images/gallery-3.jpg' %}" class="image-popup d-flex justify-content-center align-items-center">
+            <span class="fa fa-expand"></span>
+          </a>
+          <div class="desc text-center p-3 bg-white">
+            <span class="category">Bird</span>
+            <h2><a href="{% url 'shop:pet_detail' 3 %}">Parakeet</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+          </div>
+        </div>
+      </div>
+      <!-- Add more gallery items as you have pets -->
+    </div>
+  </div>
+</section>
+
+<!-- Latest News / Blog Section -->
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center pb-4">
+      <div class="col-md-7 text-center heading-section ftco-animate">
+        <h2>Latest News from Dogstore</h2>
+        <p>Tips for pet care, new arrivals, and community stories</p>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-md-4 d-flex ftco-animate">
+        <div class="blog-entry align-self-stretch">
+          <a href="#" class="block-20 rounded" style="background-image: url('{% static "images/image_1.jpg" %}');">
+          </a>
+          <div class="text p-4">
+            <div class="meta mb-2">
+              <div><a href="#">June 01, 2024</a></div>
+              <div><a href="#">Admin</a></div>
+              <div><a href="#"><span class="fa fa-comment"></span> 5</a></div>
+            </div>
+            <h3 class="heading"><a href="#">Introducing our expanded Pet Toy lineup for Summer!</a></h3>
+          </div>
+        </div>
+      </div>
+      <!-- Add more news/blog items as needed -->
+    </div>
+  </div>
+</section>
+
+<!-- Appointment / Contact Section -->
+<section class="ftco-appointment ftco-section ftco-no-pt ftco-no-pb img" style="background-image: url('{% static "images/bg_3.jpg" %}');">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row d-md-flex justify-content-end">
+      <div class="col-md-12 col-lg-6 half p-3 py-5 pl-lg-5 ftco-animate">
+        <h2 class="mb-4">Free Consultation</h2>
+        <form action="#" method="post" class="appointment">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="form-field">
+                  <div class="select-wrap">
+                    <div class="icon"><span class="fa fa-chevron-down"></span></div>
+                    <select name="service" id="service" class="form-control">
+                      <option value="">Select Service</option>
+                      <option value="pet-buy">Adopt a Pet</option>
+                      <option value="accessories">Pet Accessories Inquiry</option>
+                      <option value="toys">Pet Toys Inquiry</option>
+                      <option value="medicines">Pet Medicines Consultation</option>
+                      <option value="vet">Vet Consultation</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Your Name" name="name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="email" class="form-control" placeholder="Your Email" name="email" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control appointment_date" placeholder="Preferred Date" name="date">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control appointment_time" placeholder="Preferred Time" name="time">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <textarea name="message" id="message" cols="30" rows="5" class="form-control" placeholder="Your Message here"></textarea>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary py-3 px-4">Send Message</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

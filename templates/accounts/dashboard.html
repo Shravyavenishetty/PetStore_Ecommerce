@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard - Dogstore{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1>Welcome, {{ user.first_name }}!</h1>
+  <p class="lead">Manage your account and orders here.</p>
+
+  <div class="card mt-4">
+    <div class="card-header">Profile Information</div>
+    <div class="card-body">
+      <p><strong>First Name:</strong> {{ user.first_name }}</p>
+      <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+      <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Username:</strong> {{ user.username }}</p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a href="{% url 'accounts:logout' %}" class="btn btn-danger">Logout</a>
+  </div>
+</div>
+{% endblock %}

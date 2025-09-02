@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ pet.name }} Details{% endblock %}
+
+{% block content %}
+<style>
+  .star-rating span {
+    font-size: 1.5rem;
+    color: #ccc;
+  }
+  .star-rating .full {
+    color: gold;
+  }
+  #wishlist-icon {
+    font-size: 1.8rem !important;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  #wishlist-icon.added {
+    color: red !important;
+  }
+  #share-icon {
+    font-size: 1.8rem !important;
+    cursor: pointer;
+    color: #121213;
+    margin-left: 15px;
+  }
+</style>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Pet Image -->
+    <div class="col-md-6">
+      <img src="{{ pet.image.url }}" class="img-fluid rounded mb-4" alt="{{ pet.name }}">
+    </div>
+
+    <!-- Pet Details -->
+    <div class="col-md-6">
+      <h2>
+        {{ pet.name }}
+        {% if pet.breed %}
+          &nbsp;-&nbsp;{{ pet.breed }}
+        {% endif %}
+      </h2>
+      <p><strong>Category:</strong> {{ pet.category.name }}</p>
+      <p><strong>Age:</strong> {{ pet.age }} years</p>
+      <p class="text-primary h4 font-weight-bold">₹ {{ pet.price|floatformat:2 }}</p>
+      <p>{{ pet.description|linebreaks }}</p>
+
+      <!-- Average Rating -->
+      <div class="mb-3" aria-label="Average rating: {{ pet.average_rating|default:'0' }}">
+        <strong>Average Rating:</strong>
+        <div class="star-rating d-inline-block align-middle" role="img" aria-label="Rating">
+          {% for i in "12345" %}
+            {% if forloop.counter <= pet.average_rating|default:0 %}
+              <span class="full">&#9733;</span>
+            {% elif forloop.counter0 < pet.average_rating < forloop.counter %}
+              <span class="full">&#9733;</span>
+            {% else %}
+              <span>&#9734;</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <small class="ml-2">({{ pet.review_count }} review{{ pet.review_count|pluralize }})</small>
+      </div>
+
+      <!-- Buttons Section -->
+      <div class="d-flex flex-wrap align-items-center mb-3">
+        <!-- Buy Now Button -->
+        <a href="{% url 'shop:checkout' %}?model=pet&item_id={{ pet.pk }}" class="btn btn-success btn-lg mr-3 mb-2">Buy Now</a>
+
+        {% if in_cart %}
+          <!-- If in cart: show View Cart Amazon style -->
+          <a href="{% url 'carts:view' %}"
+             class="btn btn-warning btn-lg mr-3 mb-2"
+             style="min-width:190px;">
+            <i class="fas fa-shopping-cart"></i> Added to Cart – View Cart
+          </a>
+        {% else %}
+          <!-- Not in cart: show Add to Cart AJAX button -->
+          <button id="btn-add-to-cart" class="btn btn-primary btn-lg mr-3 mb-2"
+                  data-model="pet" data-object-id="{{ pet.id }}">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+        {% endif %}
+
+        <!-- Wishlist Icon -->
+        <span class="mr-3 mb-2">
+          {% if user.is_authenticated %}
+            <i id="wishlist-icon"
+               class="{% if is_in_wishlist %}fas{% else %}far{% endif %} fa-heart"
+               title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
+               role="button"
+               tabindex="0"
+               data-object-id="{{ pet.id }}"
+               data-model="pet"
+               data-url="{% url 'wishlist:toggle_wishlist' %}"
+               style="color:#e74c3c;">
+            </i>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" title="Login to add to wishlist">
+              <i class="far fa-heart" style="color:#e74c3c;"></i>
+            </a>
+          {% endif %}
+        </span>
+
+        <!-- Share Icon -->
+        <i id="share-icon" class="fas fa-share-alt mb-2" title="Share this item" role="button" tabindex="0"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products Section -->
+  <hr>
+  {% include 'shop/_related_products.html' %}
+
+  <!-- Reviews Section -->
+  <hr>
+  <h3>Reviews</h3>
+  <div id="reviews-list">
+    {% if reviews %}
+      {% for review in reviews %}
+        <div class="media mb-4">
+          <div class="media-body">
+            {% if review.title %}
+              <h5 class="mt-0">{{ review.title }}</h5>
+            {% else %}
+              <h5 class="mt-0">Rating: {{ review.rating }}</h5>
+            {% endif %}
+            <div aria-label="Rating: {{ review.rating }} out of 5 stars">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <span class="text-warning">&#9733;</span>
+                {% else %}
+                  <span class="text-muted">&#9733;</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p>{{ review.comment|linebreaks }}</p>
+            <small class="text-muted">by {{ review.user.username }} on {{ review.created_at|date:"d M Y" }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No reviews yet. Be the first to review!</p>
+    {% endif %}
+  </div>
+
+  <!-- Review Form -->
+  {% if user.is_authenticated %}
+    <hr>
+    <h4>Submit a Review</h4>
+    <form id="review-form" method="POST" action="{% url 'shop:add_pet_review' pet.id %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="ratingSelect">Rating</label>
+        <select id="ratingSelect" name="rating" class="form-control" required>
+          <option value="" disabled selected>Select rating</option>
+          {% for i in "12345" %}
+            <option value="{{ i }}">{{ i }} Star{% if i != '1' %}s{% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input type="text" id="titleInput" name="title" class="form-control" maxlength="100" required>
+      </div>
+      <div class="form-group">
+        <label for="commentTextarea">Comment</label>
+        <textarea id="commentTextarea" name="comment" rows="4" class="form-control" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  {% else %}
+    <p>Please <a href="{% url 'accounts:login' %}">log in</a> to submit a review.</p>
+  {% endif %}
+</div>
+
+<script>
+// Add to Cart AJAX success handler updating cart badge dynamically
+document.getElementById('btn-add-to-cart')?.addEventListener('click', async function(event) {
+    event.preventDefault();
+
+    const button = this;
+    const url = "{% url 'carts:add_to_cart' %}";
+    const model = button.dataset.model;
+    const objectId = button.dataset.objectId;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams({ 'model': model, 'object_id': objectId }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Update cart badge immediately
+            const badge = document.getElementById('cart-count');
+            if (badge) {
+                badge.textContent = data.count > 0 ? data.count : '';
+                badge.style.display = data.count > 0 ? 'inline-block' : 'none';
+            }
+            // Persist count in localStorage for cross-page syncing
+            localStorage.setItem('cartItemCount', data.count);
+        } else {
+            console.error('Failed to add to cart:', data.error || 'Unknown error');
+            alert('Failed to add item to cart. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred while adding item to cart. Please try again.');
+    }
+});
+
+// Wishlist toggle AJAX updating wishlist count badge dynamically
+document.querySelectorAll('#wishlist-icon').forEach(icon => {
+  icon.addEventListener('click', function() {
+    const el = this;
+    fetch(el.dataset.url, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        'object_id': el.dataset.objectId,
+        'model': el.dataset.model,
+      }),
+    }).then(res => res.json())
+      .then(data => {
+        if(data.success){
+          if(data.added){
+            el.classList.remove('far');
+            el.classList.add('fas', 'added');
+            el.setAttribute('title', 'Remove from wishlist');
+          } else {
+            el.classList.remove('fas', 'added');
+            el.classList.add('far');
+            el.setAttribute('title', 'Add to wishlist');
+          }
+          const wishlistCountElem = document.getElementById('wishlist-count');
+          if(wishlistCountElem && data.count !== undefined){
+            wishlistCountElem.textContent = data.count > 0 ? data.count : '';
+            wishlistCountElem.style.display = data.count > 0 ? 'inline-block' : 'none';
+            localStorage.setItem('wishlistItemCount', data.count);
+          }
+        }
+      });
+  });
+});
+</script>
+{% endblock %}

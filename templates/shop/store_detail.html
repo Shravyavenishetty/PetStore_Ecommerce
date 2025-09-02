@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ store.name }} - Store Details{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <h2>{{ store.name }}</h2>
+  <p><strong>Address:</strong> {{ store.address }}, {{ store.city }}</p>
+  <p><strong>Contact:</strong> {{ store.contact_phone }}</p>
+
+  <hr>
+
+  <h3>Pets Available</h3>
+  {% if pets %}
+  <div class="row">
+    {% for pet in pets %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <img src="{{ pet.image.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 220px; object-fit: cover;">
+        <div class="card-body">
+          <h5 class="card-title">{{ pet.name }} {% if pet.breed %} ({{ pet.breed }}){% endif %}</h5>
+          <p class="card-text text-primary font-weight-bold mb-1">₹ {{ pet.price|floatformat:2 }}</p>
+          <a href="{% url 'shop:pet_detail' pet.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No pets currently available at this store.</p>
+  {% endif %}
+
+  <hr>
+
+  <h3>Products Available</h3>
+  {% if products %}
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+        <div class="card-body">
+          <h6 class="card-title">{{ product.name }}</h6>
+          <p class="text-primary font-weight-bold mb-1">₹ {{ product.price|floatformat:2 }}</p>
+          <a href="{% url 'shop:product_detail' product.pk %}" class="btn btn-sm btn-outline-primary">Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No products currently available at this store.</p>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pet Store - Browse Pets{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+  <h2 class="mb-4">Pet Store - Browse Pets</h2>
+
+  <!-- Category Filter -->
+  <form method="get" class="form-inline mb-4">
+    <label for="categorySelect" class="mr-2 font-weight-bold">Filter by Category:</label>
+    <select name="category" id="categorySelect" class="custom-select mr-2" onchange="this.form.submit()">
+      <option value="">All Categories</option>
+      {% for category in categories %}
+        <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>{{ category.name }}</option>
+      {% endfor %}
+    </select>
+    <noscript><button type="submit" class="btn btn-primary">Filter</button></noscript>
+  </form>
+
+  <!-- Pets Grid -->
+  <div class="row">
+    {% for pet in pets %}
+    <div class="col-md-4 mb-4 d-flex align-items-stretch">
+      <div class="card shadow-sm w-100">
+        <img src="{{ pet.image.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 220px; object-fit: cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ pet.name }} {% if pet.breed %} ({{ pet.breed }}){% endif %}</h5>
+          <p class="card-text mb-1"><strong>Category:</strong> {{ pet.category.name }}</p>
+          <p class="card-text mb-1"><strong>Age:</strong> {{ pet.age }} years</p>
+          <p class="card-text text-primary font-weight-bold mb-2">₹ {{ pet.price|floatformat:2 }}</p>
+          <a href="{% url 'shop:pet_detail' pet.pk %}" class="btn btn-sm btn-outline-primary mt-auto">View Details</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <div class="col">
+        <p class="text-muted">No pets found matching the selected category.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.has_other_pages %}
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+      </li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+      <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+      <li class="page-item"><a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?{% if selected_category %}category={{ selected_category }}&{% endif %}page={{ page_obj.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
+{% endblock %}

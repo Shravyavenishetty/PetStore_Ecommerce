@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Activate Your Dogstore Account</title>
+</head>
+<body>
+  <p>Hello {{ user.first_name }},</p>
+  <p>Thank you for registering at Dogstore!</p>
+  <p>Please click the link below to verify your email address and activate your account:</p>
+  <p><a href="http://{{ domain }}{% url 'accounts:activate' uidb64=uid token=token %}">Activate Your Account</a></p>
+  <p>If you did not initiate this registration, please ignore this email.</p>
+  <p>Best regards,<br>Pawverse Team</p>
+</body>
+</html>

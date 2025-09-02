@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dogstore — Premium Pet Products & Care{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section: Fullscreen with overlay and CTA -->
+<section class="position-relative" style="height: 85vh; background: url('{% static 'images/hero_bg.jpg' %}') center/cover no-repeat;">
+  <div class="overlay position-absolute w-100 h-100" style="background-color: rgba(0,0,0,0.55); top:0; left:0; z-index:1;"></div>
+  <div class="container h-100 d-flex flex-column justify-content-center align-items-center text-white position-relative" style="z-index:2;">
+    <h1 class="display-3 fw-bold text-center mb-4">Exceptional Care & Products for Your Beloved Pet</h1>
+    <a href="{% url 'shop:store' %}" class="btn btn-lg btn-warning px-5 shadow-lg">Explore Our Store</a>
+  </div>
+</section>
+
+<!-- Category Showcase -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center display-5 fw-semibold mb-5">Shop by Popular Categories</h2>
+    <div class="row g-4">
+
+      {% comment %} Example category cards {% endcomment %}
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden hover-scale">
+          <a href="{% url 'shop:store' %}">
+            <img src="{% static 'images/cat_petstore.jpg' %}" alt="Pets" class="card-img-top" style="height: 190px; object-fit: cover;">
+          </a>
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold mb-2">Pets & Animals</h5>
+            <p class="text-muted small mb-3">Find your perfect pet - dogs, cats, birds, fish, more!</p>
+            <a href="{% url 'shop:store' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Shop Pets</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden hover-scale">
+          <a href="{% url 'shop:accessories_all_pets' %}">
+            <img src="{% static 'images/cat_accessories.jpg' %}" alt="Accessories" class="card-img-top" style="height: 190px; object-fit: cover;">
+          </a>
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold mb-2">Accessories</h5>
+            <p class="text-muted small mb-3">Collars, beds, clothing & essentials for all pets.</p>
+            <a href="{% url 'shop:accessories_all_pets' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Browse Accessories</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden hover-scale">
+          <a href="{% url 'shop:food_all_pets' %}">
+            <img src="{% static 'images/cat_food.jpg' %}" alt="Food" class="card-img-top" style="height: 190px; object-fit: cover;">
+          </a>
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold mb-2">Food</h5>
+            <p class="text-muted small mb-3">Nutritious food tailored for dogs, cats, birds, and more.</p>
+            <a href="{% url 'shop:food_all_pets' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Shop Food</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden hover-scale">
+          <a href="{% url 'shop:medicines_all_pets' %}">
+            <img src="{% static 'images/cat_medicines.jpg' %}" alt="Medicines" class="card-img-top" style="height: 190px; object-fit: cover;">
+          </a>
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold mb-2">Medicines</h5>
+            <p class="text-muted small mb-3">Health products and trusted medicines for your pets.</p>
+            <a href="{% url 'shop:medicines_all_pets' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Shop Medicines</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center display-6 fw-semibold mb-5">Why Choose Dogstore?</h2>
+    <div class="row text-center g-4">
+      <div class="col-md-3">
+        <div class="text-primary fs-1 mb-3"><span class="flaticon-stethoscope"></span></div>
+        <h5 class="fw-semibold">Veterinary Experts</h5>
+        <p class="text-muted">Certified vets providing top-tier pet care and advice.</p>
+      </div>
+      <div class="col-md-3">
+        <div class="text-primary fs-1 mb-3"><span class="flaticon-customer-service"></span></div>
+        <h5 class="fw-semibold">Round-The-Clock Support</h5>
+        <p class="text-muted">Friendly assistance whenever you need it.</p>
+      </div>
+      <div class="col-md-3">
+        <div class="text-primary fs-1 mb-3"><span class="flaticon-emergency-call"></span></div>
+        <h5 class="fw-semibold">Emergency Services</h5>
+        <p class="text-muted">Urgent vet support available any time.</p>
+      </div>
+      <div class="col-md-3">
+        <div class="text-primary fs-1 mb-3"><span class="flaticon-veterinarian"></span></div>
+        <h5 class="fw-semibold">Trusted Care</h5>
+        <p class="text-muted">Loved and trusted by thousands of pet owners.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center display-6 fw-semibold mb-4">FAQs</h2>
+    <div class="accordion" id="faqAccordion" role="tablist">
+
+      {% comment %} You can dynamically load questions, here are samples {% endcomment %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq1-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+            How do I choose the right pet for my lifestyle?
+          </button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse show" aria-labelledby="faq1-header" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            We help you evaluate your living situation, activity level, allergies, and preferences to find your perfect pet match.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq2-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+            What should I know about pet nutrition?
+          </button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2-header" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Proper diet varies by pet type and age; we recommend educational resources and premium foods for balanced nutrition.
+          </div>
+        </div>
+      </div>
+
+      <!-- Add as many accordion items as needed -->
+
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 text-white position-relative" style="background: url('{% static 'images/bg_2.jpg' %}') center/cover no-repeat;">
+  <div class="overlay position-absolute w-100 h-100" style="background: rgba(0,0,0,0.7); top:0; left:0;"></div>
+  <div class="container position-relative">
+    <h2 class="text-center display-5 fw-semibold mb-4">Customer Reviews</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="bg-white rounded p-4 shadow-sm text-dark h-100">
+          <p>"The staff helped me find the perfect puppy, and the medical care was outstanding!"</p>
+          <div class="d-flex align-items-center mt-3">
+            <img src="{% static 'images/person_1.jpg' %}" alt="Reviewer" class="rounded-circle me-3" width="60" height="60">
+            <div>
+              <strong>Roger Scott</strong><br>
+              <small class="text-muted">Happy Pet Owner</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="bg-white rounded p-4 shadow-sm text-dark h-100">
+          <p>"Excellent product selection and quick delivery. My cat loves the new toys."</p>
+          <div class="d-flex align-items-center mt-3">
+            <img src="{% static 'images/person_2.jpg' %}" alt="Reviewer" class="rounded-circle me-3" width="60" height="60">
+            <div>
+              <strong>Emily Rose</strong><br>
+              <small class="text-muted">Cat Owner</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="bg-white rounded p-4 shadow-sm text-dark h-100">
+          <p>"Professional, compassionate veterinary services that gave me peace of mind."</p>
+          <div class="d-flex align-items-center mt-3">
+            <img src="{% static 'images/person_3.jpg' %}" alt="Reviewer" class="rounded-circle me-3" width="60" height="60">
+            <div>
+              <strong>Mike Johnson</strong><br>
+              <small class="text-muted">Veterinary Client</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Pricing / Packages -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center display-6 fw-semibold mb-4">Our Packages</h2>
+    <p class="text-center mb-5 text-muted">Choose the perfect plan for your pet’s unique needs</p>
+    <div class="row g-4">
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm rounded-lg h-100 text-center p-4 bg-white">
+          <h3 class="fw-semibold mb-3">Basic Care</h3>
+          <div class="display-4 fw-bold mb-3">$49 <span class="fs-6 text-muted">/ month</span></div>
+          <ul class="list-unstyled text-muted mb-4">
+            <li>Weekly Dog Walks</li>
+            <li>Health Check-ups</li>
+            <li>Grooming Sessions</li>
+          </ul>
+          <a href="#" class="btn btn-primary px-5">Choose Plan</a>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm rounded-lg h-100 text-center p-4 bg-white">
+          <h3 class="fw-semibold mb-3">Standard Care</h3>
+          <div class="display-4 fw-bold mb-3">$79 <span class="fs-6 text-muted">/ month</span></div>
+          <ul class="list-unstyled text-muted mb-4">
+            <li>Daily Dog Walks</li>
+            <li>Vaccination Reminders</li>
+            <li>Emergency Support</li>
+          </ul>
+          <a href="#" class="btn btn-primary px-5">Choose Plan</a>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm rounded-lg h-100 text-center p-4 bg-white">
+          <h3 class="fw-semibold mb-3">Premium Care</h3>
+          <div class="display-4 fw-bold mb-3">$109 <span class="fs-6 text-muted">/ month</span></div>
+          <ul class="list-unstyled text-muted mb-4">
+            <li>24/7 Veterinary Support</li>
+            <li>Personalized Nutrition</li>
+            <li>Spa and Grooming</li>
+          </ul>
+          <a href="#" class="btn btn-primary px-5">Choose Plan</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Pet Gallery -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center display-6 fw-semibold mb-4">Meet Our Pets</h2>
+    <p class="text-center mb-5 text-muted">Browse some of the adorable pets in our care</p>
+    <div class="row g-3">
+
+      <div class="col-md-4">
+        <div class="gallery-item rounded rounded-3 overflow-hidden position-relative" 
+             style="background-image: url('{% static 'images/gallery-1.jpg' %}'); height: 300px; background-size: cover; background-position: center;">
+          <a href="{% static 'images/gallery-1.jpg' %}" class="stretched-link gallery-popup" aria-label="View image of Labrador Retriever"></a>
+          <div class="gallery-caption bg-white px-3 py-2 rounded-bottom position-absolute bottom-0 start-0 w-100 text-center">
+            <small class="text-muted">Dog</small>
+            <h5><a href="{% url 'shop:pet_detail' 1 %}" class="text-dark text-decoration-none">Labrador Retriever</a></h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="gallery-item rounded rounded-3 overflow-hidden position-relative" 
+             style="background-image: url('{% static 'images/gallery-2.jpg' %}'); height: 300px; background-size: cover; background-position: center;">
+          <a href="{% static 'images/gallery-2.jpg' %}" class="stretched-link gallery-popup" aria-label="View image of Persian Cat"></a>
+          <div class="gallery-caption bg-white px-3 py-2 rounded-bottom position-absolute bottom-0 start-0 w-100 text-center">
+            <small class="text-muted">Cat</small>
+            <h5><a href="{% url 'shop:pet_detail' 2 %}" class="text-dark text-decoration-none">Persian Cat</a></h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="gallery-item rounded rounded-3 overflow-hidden position-relative" 
+             style="background-image: url('{% static 'images/gallery-3.jpg' %}'); height: 300px; background-size: cover; background-position: center;">
+          <a href="{% static 'images/gallery-3.jpg' %}" class="stretched-link gallery-popup" aria-label="View image of Parakeet"></a>
+          <div class="gallery-caption bg-white px-3 py-2 rounded-bottom position-absolute bottom-0 start-0 w-100 text-center">
+            <small class="text-muted">Bird</small>
+            <h5><a href="{% url 'shop:pet_detail' 3 %}" class="text-dark text-decoration-none">Parakeet</a></h5>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Latest News -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center display-6 fw-semibold mb-4">Latest News & Updates</h2>
+    <p class="text-center text-muted mb-5">Stay updated with our community and pet care tips</p>
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <div class="card rounded shadow-sm h-100">
+          <img src="{% static 'images/image_1.jpg' %}" class="card-img-top" alt="Pet Toy Expansion">
+          <div class="card-body">
+            <h5 class="fw-bold">Expanded Pet Toy Lineup for Summer</h5>
+            <p class="small text-muted mb-0">June 01, 2024 | Admin | 5 Comments</p>
+            <a href="#" class="stretched-link" aria-label="Read more about Pet Toy lineup"></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add more blog cards as needed -->
+
+    </div>
+  </div>
+</section>
+
+<!-- Contact / Free Consultation -->
+<section class="py-5 position-relative" style="background-image: url('{% static 'images/bg_3.jpg' %}'); background-size: cover; background-position: center;">
+  <div class="overlay position-absolute w-100 h-100" style="background: rgba(0,0,0,0.55); top:0; left:0;"></div>
+  <div class="container position-relative text-white">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 p-5 bg-dark bg-opacity-75 rounded">
+        <h2 class="fw-bold mb-4">Ready to Care for Your Pet?</h2>
+        <form action="#" method="post" class="text-white">
+          <div class="mb-3">
+            <label for="service" class="form-label">Select Service</label>
+            <select id="service" name="service" class="form-select">
+              <option value="">Choose a service</option>
+              <option value="adopt_pet">Adopt a Pet</option>
+              <option value="accessories_inquiry">Pet Accessories Inquiry</option>
+              <option value="toys_inquiry">Pet Toys Inquiry</option>
+              <option value="medicines_consult">Pet Medicines Consultation</option>
+              <option value="vet_consult">Vet Consultation</option>
+            </select>
+          </div>
+          <div class="mb-3"><input type="text" name="name" class="form-control" placeholder="Your Name" required></div>
+          <div class="mb-3"><input type="email" name="email" class="form-control" placeholder="Your Email" required></div>
+          <div class="mb-3 d-flex gap-3">
+            <input type="date" name="preferred_date" class="form-control" placeholder="Preferred Date">
+            <input type="time" name="preferred_time" class="form-control" placeholder="Preferred Time">
+          </div>
+          <div class="mb-3"><textarea name="message" rows="4" class="form-control" placeholder="Message"></textarea></div>
+          <button type="submit" class="btn btn-primary px-5">Send Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Inline Styles for Hover Effects -->
+<style>
+  .hover-scale:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .overlay {
+    z-index: 1;
+  }
+  .gallery-item .gallery-caption {
+    backdrop-filter: blur(8px);
+  }
+</style>
+
+{% endblock %}

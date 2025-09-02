@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4">My Wishlist</h2>
+
+    {% if wishlist_items %}
+    <div class="row">
+        {% for item in wishlist_items %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    {% with model_name=item.content_type.model %}
+                        {% if model_name == "pet" %}
+                            <img src="{{ item.content_object.image.url }}" class="card-img-top" style="height:200px;object-fit:cover;" alt="{{ item.content_object.name }}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-2">{{ item.content_object.name }}{% if item.content_object.breed %} - {{ item.content_object.breed }}{% endif %}</h5>
+                                <p class="mb-1">₹ {{ item.content_object.price|floatformat:2 }}</p>
+                                <a href="{% url 'shop:pet_detail' item.content_object.pk %}" class="btn btn-sm btn-outline-info mb-2">View Pet</a>
+                                <button data-id="{{ item.id }}" data-model="{{ model_name }}" data-object-id="{{ item.object_id }}" class="btn btn-danger btn-sm remove-wishlist">Remove</button>
+                            </div>
+                        {% elif model_name == "product" %}
+                            <img src="{{ item.content_object.image.url }}" class="card-img-top" style="height:200px;object-fit:cover;" alt="{{ item.content_object.name }}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-2">{{ item.content_object.name }}</h5>
+                                <p class="mb-1">₹ {{ item.content_object.price|floatformat:2 }}</p>
+                                <a href="{% url 'shop:product_detail' item.content_object.pk %}" class="btn btn-sm btn-outline-info mb-2">View Product</a>
+                                <button data-id="{{ item.id }}" data-model="{{ model_name }}" data-object-id="{{ item.object_id }}" class="btn btn-danger btn-sm remove-wishlist">Remove</button>
+                            </div>
+                        {% else %}
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-2">{{ item.content_object }}</h5>
+                                <button data-id="{{ item.id }}" data-model="{{ model_name }}" data-object-id="{{ item.object_id }}" class="btn btn-danger btn-sm remove-wishlist">Remove</button>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-center text-muted">Your wishlist is empty.</p>
+    {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.remove-wishlist').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var card = this.closest('.card');
+        var model = this.dataset.model;
+        var objectId = this.dataset.objectId;
+        var token = '{{ csrf_token }}';
+
+        fetch("{% url 'wishlist:toggle_wishlist' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': token,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'model': model,
+                'object_id': objectId
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.added === false) {
+                if (card) {
+                    card.remove();
+                }
+                var countElem = document.getElementById('wishlist-count');
+                if (countElem) {
+                    var count = data.count || 0;
+                    countElem.textContent = count > 0 ? count : '';
+                }
+            } else if (!data.success) {
+                alert(data.error || 'Failed to remove item from wishlist.');
+            }
+        })
+        .catch(() => alert('Server error. Please try again later.'));
+    });
+});
+</script>
+{% endblock %}
