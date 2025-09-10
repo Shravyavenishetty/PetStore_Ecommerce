@@ -6,6 +6,6 @@ django-crispy-forms
 django-widget-tweaks
 dj-database-url
 psycopg2-binary
-environ
+django-environ
 qrcode
 djangorestframework
