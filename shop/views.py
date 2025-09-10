@@ -396,7 +396,7 @@ def process_order(request):
         order_amount = sum(ci.subtotal() for ci in cart_items)
 
         # Mark cart items inactive after order placed
-        cart_items.update(active=False)
+        # cart_items.update(active=False)
 
     # Handle UPI payment method with intent URI
     if payment_method == 'upi':
@@ -641,3 +641,8 @@ def confirm_upi_payment(request, order_id):
 
     messages.success(request, "Thank you! Your UPI payment confirmation has been received.")
     return redirect('shop:order_success')  # Or any success page you have
+
+@login_required
+def unpaid_orders(request):
+    orders = Order.objects.filter(user=request.user, payment_status='pending').order_by('-created_at')
+    return render(request, 'shop/unpaid_orders.html', {'orders': orders})
