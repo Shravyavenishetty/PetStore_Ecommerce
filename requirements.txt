@@ -9,3 +9,4 @@ psycopg2-binary
 django-environ
 qrcode
 djangorestframework
+requests
