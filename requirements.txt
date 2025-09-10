@@ -8,3 +8,4 @@ qrcode                  # For UPI QR code generation
 django-crispy-forms     # If you use crispy forms in templates
 django-widget-tweaks    # If you use it for form rendering
 djangorestframework     # If you are building/drf APIs
+django-environ
