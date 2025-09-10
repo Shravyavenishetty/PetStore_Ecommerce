@@ -1,0 +1,1 @@
+web: gunicorn dogstore.wsgi:application --log-file -
