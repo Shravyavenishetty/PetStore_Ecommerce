@@ -28,7 +28,8 @@ SECRET_KEY = '!+cea6h^*#4rh6vwlr=0a!%ygtc@hta%@4r&3d$d*dqffq@s9p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'petstore-ecommerce.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
