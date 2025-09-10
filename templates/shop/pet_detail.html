@@ -178,7 +178,7 @@
 </div>
 
 <script>
-// Add to Cart AJAX success handler updating cart badge dynamically
+// Add to Cart AJAX success handler updating cart badge dynamically and button toggle
 document.getElementById('btn-add-to-cart')?.addEventListener('click', async function(event) {
     event.preventDefault();
 
@@ -201,14 +201,24 @@ document.getElementById('btn-add-to-cart')?.addEventListener('click', async func
         const data = await response.json();
 
         if (data.success) {
-            // Update cart badge immediately
+            // Update cart count badge immediately
             const badge = document.getElementById('cart-count');
             if (badge) {
                 badge.textContent = data.count > 0 ? data.count : '';
                 badge.style.display = data.count > 0 ? 'inline-block' : 'none';
             }
-            // Persist count in localStorage for cross-page syncing
             localStorage.setItem('cartItemCount', data.count);
+
+            // Replace Add to Cart button with 'Added to Cart – View Cart' link
+            if (button) {
+                const viewCartBtn = document.createElement('a');
+                viewCartBtn.href = "{% url 'carts:view' %}";
+                viewCartBtn.className = 'btn btn-warning btn-lg mr-3 mb-2';
+                viewCartBtn.style.minWidth = '190px';
+                viewCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Added to Cart – View Cart';
+
+                button.parentNode.replaceChild(viewCartBtn, button);
+            }
         } else {
             console.error('Failed to add to cart:', data.error || 'Unknown error');
             alert('Failed to add item to cart. Please try again.');
