@@ -27,4 +27,5 @@ urlpatterns = [
     path('fish-aquarium-supplies/', views.fish_aquarium_supplies, name='fish_aquarium_supplies'),
     path('pet-shops/', views.all_pet_shops, name='all_pet_shops'),
     path('confirm-upi-payment/<int:order_id>/', views.confirm_upi_payment, name='confirm_upi_payment'),
+    path('orders/unpaid/', views.unpaid_orders, name='unpaid_orders'),
 ]
