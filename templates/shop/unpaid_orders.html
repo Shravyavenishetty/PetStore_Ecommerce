@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Your Unpaid Orders{% endblock %}
+
+{% block content %}
+<h2>Your Unpaid Orders</h2>
+{% if orders %}
+  <ul class="list-group mb-3">
+    {% for order in orders %}
+      <li class="list-group-item">
+        <strong>Order #{{ order.id }}</strong> — Placed on {{ order.created_at|date:"d M Y" }} — ₹{{ order.order_total|default:"N/A" }}<br />
+        <a href="{% url 'shop:pay_order' order.id %}">Proceed to Payment</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You have no unpaid orders.</p>
+{% endif %}
+{% endblock %}
