@@ -120,18 +120,24 @@ class Favourite(models.Model):
 
 
 class Order(models.Model):
-    # Related to either Pet or Product, you can adjust for your case
-    # For more flexible design, consider GenericForeignKey
     item_name = models.CharField(max_length=200)
     buyer_name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
     shipping_address = models.TextField()
     payment_method = models.CharField(max_length=50)
-    user_upi_id = models.CharField(max_length=100, blank=True, null=True)  # Added field
+    user_upi_id = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    # Add other fields as needed
+
+    # New fields for tracking
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('failed', 'Failed'),
+    ]
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Order #{self.id} for {self.buyer_name}"
-
