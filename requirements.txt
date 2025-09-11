@@ -10,3 +10,7 @@ django-environ
 qrcode
 djangorestframework
 requests
+postgresql
+postgresql-contrib
+psycopg2-binary
+postgresql-client-17
