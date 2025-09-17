@@ -4,55 +4,100 @@
 {% block title %}{{ store.name }} - Store Details{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <h2>{{ store.name }}</h2>
-  <p><strong>Address:</strong> {{ store.address }}, {{ store.city }}</p>
-  <p><strong>Contact:</strong> {{ store.contact_phone }}</p>
+<div class="container py-5">
+
+  <h2 class="text-center mb-4" style="font-family: 'Roboto', sans-serif; font-weight:700; color:#000;">{{ store.name }}</h2>
+
+  <div class="mb-5 text-center text-secondary">
+    <p><i class="fa fa-map-marker-alt text-success me-2"></i><strong>Address:</strong> {{ store.address }}, {{ store.city }}</p>
+    <p><i class="fa fa-phone-alt text-success me-2"></i><strong>Contact:</strong> {{ store.contact_phone }}</p>
+  </div>
 
   <hr>
 
-  <h3>Pets Available</h3>
+  <!-- Pets Section -->
+  <h3 class="mb-4" style="font-family: 'Roboto', sans-serif; font-weight:700; color:#000;">Pets Available</h3>
   {% if pets %}
-  <div class="row">
+  <div class="row g-4">
     {% for pet in pets %}
-    <div class="col-md-4 mb-4">
-      <div class="card shadow-sm">
-        <img src="{{ pet.image.url }}" class="card-img-top" alt="{{ pet.name }}" style="height: 220px; object-fit: cover;">
-        <div class="card-body">
-          <h5 class="card-title">{{ pet.name }} {% if pet.breed %} ({{ pet.breed }}){% endif %}</h5>
-          <p class="card-text text-primary font-weight-bold mb-1">₹ {{ pet.price|floatformat:2 }}</p>
-          <a href="{% url 'shop:pet_detail' pet.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+    <div class="col-md-4 d-flex">
+      <a href="{% url 'shop:pet_detail' pet.pk %}" class="card flex-fill shadow-sm rounded-4 hover-card text-decoration-none text-dark">
+        <div class="d-flex justify-content-center mt-3">
+          <img src="{{ pet.image.url }}" class="card-img-top" alt="{{ pet.name }}" style="width: 80%; height: auto; object-fit: cover;">
         </div>
-      </div>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title mb-2" style="font-weight:700;">{{ pet.name }} {% if pet.breed %} ({{ pet.breed }}){% endif %}</h5>
+          <p class="text-secondary mb-1"><strong>Category:</strong> {{ pet.category.name }}</p>
+          <p class="text-secondary mb-1"><strong>Age:</strong> {{ pet.age }} years</p>
+          <p class="text-secondary mb-2">{{ pet.description|truncatechars:50 }}</p>
+          <p class="text-success fw-bold mb-3">₹ {{ pet.price|floatformat:2 }}</p>
+          <span class="btn btn-outline-success btn-sm mt-auto w-100">View Details</span>
+        </div>
+      </a>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <p>No pets currently available at this store.</p>
+  <p class="text-muted">No pets currently available at this store.</p>
   {% endif %}
 
-  <hr>
+  <br>
 
-  <h3>Products Available</h3>
+  <!-- Products Section -->
+  <h3 class="mb-4" style="font-family: 'Roboto', sans-serif; font-weight:700; color:#000;">Products Available</h3>
   {% if products %}
-  <div class="row">
+  <div class="row g-4">
     {% for product in products %}
-    <div class="col-md-3 mb-4">
-      <div class="card shadow-sm">
-        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
-        <div class="card-body">
-          <h6 class="card-title">{{ product.name }}</h6>
-          <p class="text-primary font-weight-bold mb-1">₹ {{ product.price|floatformat:2 }}</p>
-          <a href="{% url 'shop:product_detail' product.pk %}" class="btn btn-sm btn-outline-primary">Details</a>
+    <div class="col-md-3 d-flex">
+      <a href="{% url 'shop:product_detail' product.pk %}" class="card flex-fill shadow-sm rounded-4 hover-card text-decoration-none text-dark">
+        <div class="d-flex justify-content-center mt-3">
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="width: 80%; height: auto; object-fit: cover;">
         </div>
-      </div>
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title mb-2" style="font-weight:500;">{{ product.name }}</h6>
+          <p class="text-secondary mb-1"><strong>Category:</strong> {{ product.category.name }}</p>
+          <p class="text-secondary mb-2">{{ product.description|truncatechars:50 }}</p>
+          <p class="text-success fw-bold mb-3">₹ {{ product.price|floatformat:2 }}</p>
+          <span class="btn btn-outline-success btn-sm mt-auto w-100">View Details</span>
+        </div>
+      </a>
     </div>
     {% endfor %}
   </div>
   {% else %}
-  <p>No products currently available at this store.</p>
+  <p class="text-muted">No products currently available at this store.</p>
   {% endif %}
 
 </div>
+
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+  }
+
+  /* Hover effect for cards */
+  .hover-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+  }
+
+  .card-body p {
+    margin-bottom: 0.4rem;
+  }
+
+  /* Space between icon and text */
+  .card-body i {
+    margin-right: 8px;
+  }
+</style>
 {% endblock %}

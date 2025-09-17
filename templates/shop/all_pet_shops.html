@@ -4,86 +4,118 @@
 {% block title %}All Pet Shops | Pawverse{% endblock %}
 
 {% block content %}
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
 <div class="container py-5">
+    <h2 class="text-center mb-5" style="font-family: 'Roboto', sans-serif; font-weight:700; font-size:2.5rem; color:#000;">
+        Explore All Pet Shops
+    </h2>
 
-    <h2 class="fw-bold mb-4 text-center">All Pet Shops</h2>
-
-    <div class="row g-4">
+    <div class="row g-5">
         {% for store in stores %}
-            <div class="col-md-6 col-lg-4 d-flex">
-                <div class="card flex-fill border-0 shadow-sm rounded-3 mb-4 animate__animated animate__fadeIn">
-                    <div class="card-body d-flex flex-column">
-                        <h4 class="card-title mb-2 fw-semibold text-primary">{{ store.name }}</h4>
-                        <p class="mb-1 text-muted"><i class="fa fa-map-marker-alt"></i> {{ store.address }}, {{ store.city }}</p>
-                        <p class="mb-2 text-muted"><i class="fa fa-phone-alt"></i> {{ store.contact_phone }}</p>
-                        <div class="mt-auto">
-                            <a href="{% url 'shop:store_detail' store.pk %}"
-                               class="btn btn-outline-success px-4 w-100">
-                               View Shop
-                            </a>
-                        </div>
+        <div class="col-md-6 col-lg-4 d-flex">
+            <a href="{% url 'shop:store_detail' store.pk %}" class="card flex-fill border-0 shadow-sm rounded-4 hover-card text-decoration-none text-dark">
+                <div class="card-body d-flex flex-column">
+                    <h4 class="card-title mb-3" style="font-family: 'Roboto', sans-serif; font-weight:700; color:#000;">
+                        {{ store.name }}
+                    </h4>
+
+                    <p class="mb-2 text-secondary">
+                        <i class="fa fa-map-marker-alt text-success me-2"></i>
+                        <strong>Address:</strong> {{ store.address }}, {{ store.city }}
+                    </p>
+
+                    <p class="mb-3 text-secondary">
+                        <i class="fa fa-phone-alt text-success me-2"></i>
+                        <strong>Contact:</strong> {{ store.contact_phone }}
+                    </p>
+
+                    <div class="mt-auto">
+                        <span class="btn btn-success w-100 fw-bold" style="border-radius: 50px;">Visit Shop</span>
                     </div>
                 </div>
-            </div>
+            </a>
+        </div>
         {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">No pet shops available.</div>
-            </div>
+        <div class="col-12">
+            <div class="alert alert-info text-center fs-5">No pet shops available.</div>
+        </div>
         {% endfor %}
     </div>
 
     <!-- Pagination -->
-    {% if stores.has_other_pages %}
-      <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center mt-4">
+{% if stores.has_other_pages %}
+<nav aria-label="Page navigation example" class="mt-5">
+  <ul class="pagination justify-content-center">
 
-          {% if stores.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page=1" aria-label="First">
-                <span aria-hidden="true">&laquo;&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="?page={{ stores.previous_page_number }}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-          {% else %}
-            <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
-            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-          {% endif %}
-
-          {% for num in stores.paginator.page_range %}
-            {% if num >= stores.number|add:'-2' and num <= stores.number|add:'2' %}
-              {% if num == stores.number %}
-                <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
-              {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-
-          {% if stores.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ stores.next_page_number }}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="?page={{ stores.paginator.num_pages }}" aria-label="Last">
-                <span aria-hidden="true">&raquo;&raquo;</span>
-              </a>
-            </li>
-          {% else %}
-            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-            <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
-          {% endif %}
-        </ul>
-      </nav>
+    {% if stores.has_previous %}
+    <li class="page-item">
+      <a class="page-link text-success" href="?page={{ stores.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">&laquo;</span>
+    </li>
     {% endif %}
+
+    {% for num in stores.paginator.page_range %}
+      {% if num >= stores.number|add:'-2' and num <= stores.number|add:'2' %}
+        {% if num == stores.number %}
+          <li class="page-item active"><span class="page-link bg-success border-success text-white">{{ num }}</span></li>
+        {% else %}
+          <li class="page-item"><a class="page-link text-success" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if stores.has_next %}
+    <li class="page-item">
+      <a class="page-link text-success" href="?page={{ stores.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">&raquo;</span>
+    </li>
+    {% endif %}
+
+  </ul>
+</nav>
+{% endif %}
 
 </div>
 
-<!-- Animate.css for fadeIn effect -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    /* Hover effect for cards */
+    .hover-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-bottom: 4rem; /* adds space between rows */
+    }
+
+    .hover-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+    }
+
+    .card-body p strong {
+        color: #0d0d0d; /* keep address/contact icon green */
+    }
+
+    .card-body p {
+        background: none !important; /* remove box effect */
+        padding: 0 !important;
+    }
+</style>
 {% endblock %}

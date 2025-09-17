@@ -104,14 +104,18 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 DATABASES = {
     'default': {
-        'ENGINE': env('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': env('DB_NAME', default='pawverse_db'),
-        'USER': env('DB_USER', default='pawverse_user'),
-        'PASSWORD': env('DB_PASSWORD', default='yourpassword'),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+    # 'default': {
+    #     'ENGINE': env('DB_ENGINE', default='django.db.backends.postgresql'),
+    #     'NAME': env('DB_NAME', default='pawverse_db'),
+    #     'USER': env('DB_USER', default='pawverse_user'),
+    #     'PASSWORD': env('DB_PASSWORD', default='yourpassword'),
+    #     'HOST': env('DB_HOST', default='localhost'),
+    #     'PORT': env('DB_PORT', default='5432'),
+    # }
 
 
 

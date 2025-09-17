@@ -25,7 +25,7 @@ def pet_store_home(request):
     if selected_category:
         pets = pets.filter(category_id=selected_category)
 
-    paginator = Paginator(pets, 4)  # 4 pets per page
+    paginator = Paginator(pets, 6)  # 4 pets per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

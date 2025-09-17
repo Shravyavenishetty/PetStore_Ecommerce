@@ -1,116 +1,89 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}All Pet Products | Dogstore{% endblock %}
-
+{% block title %}All Products - Pet Store{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4 text-center fw-bold">All Pet Products</h2>
+<div class="container my-5">
+  <h2 class="mb-4 text-center">All Products</h2>
 
   <!-- Category Filter -->
-  <div class="form-inline mb-4 justify-content-center">
+  <form method="get" class="form-inline mb-4 justify-content-center">
     <label for="categorySelect" class="mr-2 font-weight-bold">Filter by Category:</label>
-    <select id="categorySelect" class="custom-select mr-2">
-      <option value="{% url 'shop:all_products' %}" {% if not selected_category %}selected{% endif %}>All Categories</option>
-      <option value="{% url 'shop:accessories_all_pets' %}" {% if selected_category == 'accessories' %}selected{% endif %}>Accessories</option>
-      <option value="{% url 'shop:medicines_all_pets' %}" {% if selected_category == 'medicines' %}selected{% endif %}>Medicines</option>
-      <option value="{% url 'shop:food_all_pets' %}" {% if selected_category == 'food' %}selected{% endif %}>Food</option>
-      <option value="{% url 'shop:bird_cages' %}" {% if selected_category == 'cages' %}selected{% endif %}>Cages</option>
-      <option value="{% url 'shop:fish_aquarium_supplies' %}" {% if selected_category == 'aquarium_supplies' %}selected{% endif %}>Aquarium Supplies</option>
+    <select id="categorySelect" name="category" class="custom-select mr-2" onchange="this.form.submit()">
+      <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+      <option value="accessories_toys" {% if selected_category == 'accessories_toys' %}selected{% endif %}>Accessories</option>
+      <option value="medicines" {% if selected_category == 'medicines' %}selected{% endif %}>Medicines</option>
+      <option value="food" {% if selected_category == 'food' %}selected{% endif %}>Food</option>
+      <option value="cages" {% if selected_category == 'cages' %}selected{% endif %}>Cages</option>
+      <option value="aquarium_supplies" {% if selected_category == 'aquarium_supplies' %}selected{% endif %}>Aquarium Supplies</option>
     </select>
+    <noscript><button type="submit" class="btn btn-primary">Filter</button></noscript>
+  </form>
+
+  <!-- Products Grid -->
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4 d-flex align-items-stretch">
+      <a href="{% url 'shop:product_detail' product.pk %}" class="card shadow-sm w-100 text-decoration-none text-dark" style="transition: transform 0.2s;">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 180px; object-fit: cover;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title" style="font-family: 'Arial', sans-serif; font-weight: bold; font-size: 1.2rem;"><strong>{{ product.name }}</strong></h5>
+          <p class="card-text mb-1"><b>Category:</b> {{ product.category.name }}</p>
+          {% if product.description %}
+          <p class="card-text mb-1">{{ product.description|truncatewords:12 }}</p>
+          {% endif %}
+          <p class="card-text text-success font-weight-bold mb-2">₹ {{ product.price|floatformat:2 }}</p>
+          <span class="btn btn-sm btn-outline-success mt-auto">View Details</span>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <div class="col text-center">
+      <p class="text-muted">No products found.</p>
+    </div>
+    {% endfor %}
   </div>
 
-  {% if products %}
-    <div class="row g-5">
-      {% for product in products %}
-        <div class="col-lg-4 col-md-6 col-sm-12 d-flex">
-          <div class="card flex-fill border-0 shadow-sm rounded-3 overflow-hidden h-100 product-card-uncut">
-            <a href="{% url 'shop:product_detail' product.pk %}" class="text-decoration-none text-dark">
-              {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top product-img-uncut">
-              {% else %}
-                <img src="{% static 'images/product_placeholder.png' %}" alt="{{ product.name }}" class="card-img-top product-img-uncut">
-              {% endif %}
-              <div class="card-body d-flex flex-column">
-                <h6 class="card-title mb-2 text-truncate">{{ product.name }}</h6>
-                <p class="card-text text-muted small mb-3 flex-grow-1" style="overflow-wrap: anywhere;">
-                  {{ product.description|default:"No description available" }}
-                </p>
-                <div class="mt-auto d-flex justify-content-between align-items-center">
-                  <span class="fw-bold text-success">₹ {{ product.price|floatformat:2 }}</span>
-                  <button class="btn btn-outline-primary btn-sm">View</button>
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
+  <!-- Pagination -->
+  {% if products.has_other_pages %}
+  <nav aria-label="Page navigation example" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if products.has_previous %}
+      <li class="page-item">
+        <a class="page-link text-success" href="?page={{ products.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+      {% endif %}
+      {% for num in products.paginator.page_range %}
+      {% if num == products.number %}
+      <li class="page-item active"><span class="page-link bg-success border-success">{{ num }}</span></li>
+      {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+      <li class="page-item"><a class="page-link text-success" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ num }}</a></li>
+      {% endif %}
       {% endfor %}
-    </div>
-
-    <!-- Pagination (unchanged) -->
-    <nav aria-label="Product pagination" class="mt-5">
-      <ul class="pagination justify-content-center">
-        {% if products.has_previous %}
-          <li class="page-item"><a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}">First</a></li>
-          <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">&laquo; Prev</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">First</span></li>
-          <li class="page-item disabled"><span class="page-link">&laquo; Prev</span></li>
-        {% endif %}
-
-        {% for num in products.paginator.page_range %}
-          {% if num == products.number %}
-            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-          {% elif num >= products.number|add:'-2' and num <= products.number|add:'2' %}
-            <li class="page-item"><a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ num }}</a></li>
-          {% endif %}
-        {% endfor %}
-
-        {% if products.has_next %}
-          <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next &raquo;</a></li>
-          <li class="page-item"><a class="page-link" href="?page={{ products.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}">Last</a></li>
-        {% else %}
-          <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
-          <li class="page-item disabled"><span class="page-link">Last</span></li>
-        {% endif %}
-      </ul>
-    </nav>
-  {% else %}
-    <p class="text-center text-muted fs-5">No products found for this category.</p>
+      {% if products.has_next %}
+      <li class="page-item">
+        <a class="page-link text-success" href="?page={{ products.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+      {% endif %}
+    </ul>
+  </nav>
   {% endif %}
 </div>
-
-<!-- Style: prevent clipping/cropping -->
 <style>
-  .product-card-uncut {
-    min-width: 0;
-    max-width: 96%;
-    margin: auto;
-  }
-  .product-img-uncut {
-    width: 100%;
-    height: auto;
-    max-height: 185px; /* Adjust this value as needed for images without cropping */
-    object-fit: contain; /* Show full image with no crop */
-    background: #fafafa;
-    border-bottom: 1px solid #eee;
-    padding: .5rem;
-  }
-  .card-text {
-    max-height: none !important;
-    -webkit-line-clamp: unset !important;
-    display: block !important;
-  }
-  @media (min-width: 992px) {
-    .row.g-5 {
-      row-gap: 3rem;
-    }
-  }
+.card-img-top {
+  max-width: 220px; 
+  width: 50%;
+  height: 180px;
+  object-fit: cover;
+  margin-left: auto;  
+  margin-right: auto;
+}
 </style>
-
-<script>
-  // Redirect to selected category URL
-  document.getElementById('categorySelect').addEventListener('change', function(){
-      window.location.href = this.value;
-  });
-</script>
 {% endblock %}
