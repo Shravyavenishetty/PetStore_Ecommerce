@@ -9,12 +9,12 @@
   <div class="container">
     <div class="row no-gutters slider-text align-items-end">
       <div class="col-md-9 ftco-animate pb-5">
-        <p class="breadcrumbs mb-2">
+        <p class="breadcrumbs mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 500;">
           <span class="mr-2"><a href="{% url 'home' %}">Home <i class="ion-ios-arrow-forward"></i></a></span>
           <span><a href="{% url 'services:service_list' %}">Services <i class="ion-ios-arrow-forward"></i></a></span>
           <span>{{ service.title }} <i class="ion-ios-arrow-forward"></i></span>
         </p>
-        <h1 class="mb-0 bread">{{ service.title }}</h1>
+        <h1 class="mb-0 bread" style="font-family: 'Poppins', sans-serif; font-weight: 700;">{{ service.title }}</h1>
       </div>
     </div>
   </div>
@@ -22,22 +22,47 @@
 
 <section class="ftco-section bg-light">
   <div class="container">
-    <div class="row">
-      <div class="col-md-6 d-flex align-items-center justify-content-center">
+    <div class="row align-items-center">
+      <!-- Image / Icon -->
+      <div class="col-md-6 text-center mb-4 mb-md-0">
         {% if service.image %}
-          <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded shadow">
+          <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded shadow-lg" style="max-height: 400px; object-fit: cover;">
         {% else %}
           <div class="text-center py-5 text-muted">
             <i class="{{ service.icon_class }} fa-7x"></i>
           </div>
         {% endif %}
       </div>
+
+      <!-- Service Details -->
       <div class="col-md-6">
-        <h2 class="mb-4">{{ service.title }}</h2>
-        <p>{{ service.description }}</p>
-        <a href="{% url 'services:service_list' %}" class="btn btn-secondary mt-4">Back to Services</a>
+        <h2 class="mb-4" style="font-family: 'Poppins', sans-serif; font-weight: 600;">{{ service.title }}</h2>
+        <p style="font-family: 'Roboto', sans-serif; font-size: 1.05rem; line-height: 1.8;">{{ service.description }}</p>
+        
+        <!-- Book Button -->
+        <div class="mt-4">
+          <a href="#" class="btn btn-success btn-lg" style="font-family: 'Poppins', sans-serif; font-weight: 600;">Book a Service</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Custom Styles -->
+<style>
+  .hero-wrap {
+    min-height: 250px;
+  }
+  .bread {
+    color: #333;
+  }
+  .btn-success {
+    background-color: #10bf65;
+    border-color: #10bf65;
+  }
+  .btn-success:hover {
+    background-color: #0ea354;
+    border-color: #0ea354;
+  }
+</style>
 {% endblock %}
