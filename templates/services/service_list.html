@@ -9,7 +9,7 @@
   <div class="container">
     <div class="row no-gutters slider-text align-items-end">
       <div class="col-md-9 ftco-animate pb-5">
-        <p class="breadcrumbs mb-2"><span class="mr-2"><a href="{% url 'home' %}">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Services <i class="ion-ios-arrow-forward"></i></span></p>
+        <p class="breadcrumbs mb-2"><span class="mr-2"><a href="{% url 'home' %}">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>/ Services <i class="ion-ios-arrow-forward"></i></span></p>
         <h1 class="mb-0 bread">Services</h1>
       </div>
     </div>
@@ -21,18 +21,21 @@
     <div class="row">
       {% for service in services %}
       <div class="col-md-4 d-flex align-self-stretch ftco-animate mb-6">
-        <div class="d-block services text-center">
-          <div class="icon d-flex align-items-center justify-content-center mb-4">
-            <span class="{{ service.icon_class }}"></span>
+        <!-- Make entire card clickable -->
+        <a href="{% url 'services:service_detail' service.slug %}" >
+          <div class="d-block services text-center">
+            <div class="icon d-flex align-items-center justify-content-center mb-4">
+              <span class="{{ service.icon_class }}"></span>
+            </div>
+            <div class="media-body p-4">
+              <h3 class="heading">{{ service.title }}</h3>
+              <p>{{ service.description }}</p>
+              <a href="{% url 'services:service_detail' service.slug %}" class="btn-custom d-flex align-items-center justify-content-center">
+                <span class="fa fa-chevron-right"></span><i class="sr-only">Read more</i>
+              </a>
+            </div>
           </div>
-          <div class="media-body p-4">
-            <h3 class="heading">{{ service.title }}</h3>
-            <p>{{ service.description }}</p>
-            <a href="{% url 'services:service_detail' service.slug %}" class="btn-custom d-flex align-items-center justify-content-center">
-              <span class="fa fa-chevron-right"></span><i class="sr-only">Read more</i>
-            </a>
-          </div>
-        </div>
+        </a>
       </div>
       {% empty %}
       <div class="col-12">
@@ -40,40 +43,41 @@
       </div>
       {% endfor %}
     </div>
-
     <!-- Pagination -->
     {% if services.has_other_pages %}
-    <nav aria-label="Page navigation" style="margin-top: 40px;">
-      <ul class="pagination justify-content-center">
-        {% if services.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page=1">&laquo;&laquo;</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ services.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-        <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
-        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-        {% endif %}
-        {% for num in services.paginator.page_range %}
-          {% if num >= services.number|add:'-2' and num <= services.number|add:'2' %}
-            {% if num == services.number %}
-              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-            {% else %}
-              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-        {% if services.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ services.next_page_number }}">&raquo;</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ services.paginator.num_pages }}">&raquo;&raquo;</a></li>
-        {% else %}
-        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-        <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
-        {% endif %}
-      </ul>
-    </nav>
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if services.has_previous %}
+      <li class="page-item">
+        <a class="page-link text-success" href="?page={{ services.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
     {% endif %}
-  </div>
-</section>
 
+    {% for num in services.paginator.page_range %}
+      {% if services.number == num %}
+        <li class="page-item active"><span class="page-link bg-success border-success">{{ num }}</span></li>
+      {% elif num > services.number|add:'-3' and num < services.number|add:'3' %}
+        <li class="page-item"><a class="page-link text-success" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if services.has_next %}
+      <li class="page-item">
+        <a class="page-link text-success" href="?page={{ services.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+</section>
 <style>
 .mb-6 {
     margin-bottom: 6.5rem !important; /* Increase for more row spacing */
@@ -120,6 +124,5 @@
     cursor: not-allowed;
     opacity: 0.6;
 }
-
 </style>
 {% endblock %}
