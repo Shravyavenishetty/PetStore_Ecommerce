@@ -4,184 +4,287 @@
 {% block title %}{{ pet.name }} Details{% endblock %}
 
 {% block content %}
+<!-- Custom Styles -->
 <style>
-  .star-rating span {
+/* Fonts & Colors */
+body, h1, h2, h3, h4, h5, h6, p {
+    font-family: 'Inter', 'Roboto', sans-serif;
+    color: #2c3e50;
+}
+
+h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Container for Image + Info */
+.pet-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+/* Image Styling */
+.pet-image {
+    flex: 0 0 350px;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.pet-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.pet-image:hover {
+    transform: scale(1.05);
+}
+
+/* Info Section */
+.pet-info {
+    flex: 1 1 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.pet-info h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.pet-info p {
+    margin: 0.3rem 0;
+}
+
+.price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin: 0.8rem 0;
+}
+
+/* Star Rating */
+.star-rating span {
     font-size: 1.5rem;
     color: #ccc;
-  }
-  .star-rating .full {
+}
+.star-rating .full {
     color: gold;
-  }
-  #wishlist-icon {
-    font-size: 1.8rem !important;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+.action-buttons .btn {
+    padding: 12px 22px;
+    font-size: 1rem;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-icon {
+    font-size: 1.8rem;
     cursor: pointer;
-    transition: color 0.3s;
-  }
-  #wishlist-icon.added {
-    color: red !important;
-  }
-  #share-icon {
-    font-size: 1.8rem !important;
-    cursor: pointer;
-    color: #121213;
-    margin-left: 15px;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: #34495e;
+}
+
+.btn-icon:hover {
+    transform: translateY(-2px);
+}
+
+#wishlist-icon.added {
+    color: #e74c3c !important;
+}
+
+/* Related Products */
+.related-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+/* Reviews Section */
+#reviews-list .media {
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+#review-form .form-group {
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pet-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .pet-info {
+        width: 100%;
+    }
+}
 </style>
 
 <div class="container my-5">
-  <div class="row">
-    <!-- Pet Image -->
-    <div class="col-md-6">
-      <img src="{{ pet.image.url }}" class="img-fluid rounded mb-4" alt="{{ pet.name }}">
-    </div>
 
-    <!-- Pet Details -->
-    <div class="col-md-6">
-      <h2>
-        {{ pet.name }}
-        {% if pet.breed %}
-          &nbsp;-&nbsp;{{ pet.breed }}
-        {% endif %}
-      </h2>
-      <p><strong>Category:</strong> {{ pet.category.name }}</p>
-      <p><strong>Age:</strong> {{ pet.age }} years</p>
-      <p class="text-primary h4 font-weight-bold">₹ {{ pet.price|floatformat:2 }}</p>
-      <p>{{ pet.description|linebreaks }}</p>
+    <!-- Pet Image + Info -->
+    <div class="pet-container">
 
-      <!-- Average Rating -->
-      <div class="mb-3" aria-label="Average rating: {{ pet.average_rating|default:'0' }}">
-        <strong>Average Rating:</strong>
-        <div class="star-rating d-inline-block align-middle" role="img" aria-label="Rating">
-          {% for i in "12345" %}
-            {% if forloop.counter <= pet.average_rating|default:0 %}
-              <span class="full">&#9733;</span>
-            {% elif forloop.counter0 < pet.average_rating < forloop.counter %}
-              <span class="full">&#9733;</span>
-            {% else %}
-              <span>&#9734;</span>
-            {% endif %}
-          {% endfor %}
+        <!-- Image -->
+        <div class="pet-image">
+            <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
         </div>
-        <small class="ml-2">({{ pet.review_count }} review{{ pet.review_count|pluralize }})</small>
-      </div>
 
-      <!-- Buttons Section -->
-      <div class="d-flex flex-wrap align-items-center mb-3">
-        <!-- Buy Now Button -->
-        <a href="{% url 'shop:checkout' %}?model=pet&item_id={{ pet.pk }}" class="btn btn-success btn-lg mr-3 mb-2">Buy Now</a>
+        <!-- Info -->
+        <div class="pet-info">
+            <h2>{{ pet.name }}{% if pet.breed %} - {{ pet.breed }}{% endif %}</h2>
+            <p><strong>Category:</strong> {{ pet.category.name }}</p>
+            <p><strong>Age:</strong> {{ pet.age }} years</p>
+            <p class="price">₹ {{ pet.price|floatformat:2 }}</p>
+            <p>{{ pet.description|linebreaks }}</p>
 
-        {% if in_cart %}
-          <!-- If in cart: show View Cart Amazon style -->
-          <a href="{% url 'carts:view' %}"
-             class="btn btn-warning btn-lg mr-3 mb-2"
-             style="min-width:190px;">
-            <i class="fas fa-shopping-cart"></i> Added to Cart – View Cart
-          </a>
-        {% else %}
-          <!-- Not in cart: show Add to Cart AJAX button -->
-          <button id="btn-add-to-cart" class="btn btn-primary btn-lg mr-3 mb-2"
-                  data-model="pet" data-object-id="{{ pet.id }}">
-            <i class="fas fa-shopping-cart"></i> Add to Cart
-          </button>
-        {% endif %}
-
-        <!-- Wishlist Icon -->
-        <span class="mr-3 mb-2">
-          {% if user.is_authenticated %}
-            <i id="wishlist-icon"
-               class="{% if is_in_wishlist %}fas{% else %}far{% endif %} fa-heart"
-               title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
-               role="button"
-               tabindex="0"
-               data-object-id="{{ pet.id }}"
-               data-model="pet"
-               data-url="{% url 'wishlist:toggle_wishlist' %}"
-               style="color:#e74c3c;">
-            </i>
-          {% else %}
-            <a href="{% url 'accounts:login' %}" title="Login to add to wishlist">
-              <i class="far fa-heart" style="color:#e74c3c;"></i>
-            </a>
-          {% endif %}
-        </span>
-
-        <!-- Share Icon -->
-        <i id="share-icon" class="fas fa-share-alt mb-2" title="Share this item" role="button" tabindex="0"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Related Products Section -->
-  <hr>
-  {% include 'shop/_related_products.html' %}
-
-  <!-- Reviews Section -->
-  <hr>
-  <h3>Reviews</h3>
-  <div id="reviews-list">
-    {% if reviews %}
-      {% for review in reviews %}
-        <div class="media mb-4">
-          <div class="media-body">
-            {% if review.title %}
-              <h5 class="mt-0">{{ review.title }}</h5>
-            {% else %}
-              <h5 class="mt-0">Rating: {{ review.rating }}</h5>
-            {% endif %}
-            <div aria-label="Rating: {{ review.rating }} out of 5 stars">
-              {% for i in "12345" %}
-                {% if forloop.counter <= review.rating %}
-                  <span class="text-warning">&#9733;</span>
-                {% else %}
-                  <span class="text-muted">&#9733;</span>
-                {% endif %}
-              {% endfor %}
+            <!-- Star Rating -->
+            <div class="mb-3">
+                <strong>Average Rating:</strong>
+                <div class="star-rating d-inline-block align-middle">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= pet.average_rating|default:0 %}
+                            <span class="full">&#9733;</span>
+                        {% else %}
+                            <span>&#9734;</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <small class="ml-2">({{ pet.review_count }} review{{ pet.review_count|pluralize }})</small>
             </div>
-            <p>{{ review.comment|linebreaks }}</p>
-            <small class="text-muted">by {{ review.user.username }} on {{ review.created_at|date:"d M Y" }}</small>
-          </div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p>No reviews yet. Be the first to review!</p>
-    {% endif %}
-  </div>
 
-  <!-- Review Form -->
-  {% if user.is_authenticated %}
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="{% url 'shop:checkout' %}?model=pet&item_id={{ pet.pk }}" class="btn btn-success">Buy Now</a>
+
+                {% if in_cart %}
+                    <a href="{% url 'carts:view' %}" class="btn btn-warning">
+                        <i class="fas fa-shopping-cart"></i> Added to Cart – View Cart
+                    </a>
+                {% else %}
+                    <button id="btn-add-to-cart" class="btn btn-primary" data-model="pet" data-object-id="{{ pet.id }}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <i id="wishlist-icon"
+                        class="{% if is_in_wishlist %}fas{% else %}far{% endif %} fa-heart btn-icon"
+                        title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
+                        data-object-id="{{ pet.id }}"
+                        data-model="pet"
+                        data-url="{% url 'wishlist:toggle_wishlist' %}"></i>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" title="Login to add to wishlist">
+                        <i class="far fa-heart btn-icon"></i>
+                    </a>
+                {% endif %}
+
+                <i id="share-icon" class="fas fa-share-alt btn-icon" title="Share this item"></i>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Related Products -->
     <hr>
-    <h4>Submit a Review</h4>
-    <form id="review-form" method="POST" action="{% url 'shop:add_pet_review' pet.id %}">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="ratingSelect">Rating</label>
-        <select id="ratingSelect" name="rating" class="form-control" required>
-          <option value="" disabled selected>Select rating</option>
-          {% for i in "12345" %}
-            <option value="{{ i }}">{{ i }} Star{% if i != '1' %}s{% endif %}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="titleInput">Title</label>
-        <input type="text" id="titleInput" name="title" class="form-control" maxlength="100" required>
-      </div>
-      <div class="form-group">
-        <label for="commentTextarea">Comment</label>
-        <textarea id="commentTextarea" name="comment" rows="4" class="form-control" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit Review</button>
-    </form>
-  {% else %}
-    <p>Please <a href="{% url 'accounts:login' %}">log in</a> to submit a review.</p>
-  {% endif %}
+    <div class="related-products">
+        {% include 'shop/_related_products.html' %}
+    </div>
+
+    <!-- Reviews Section -->
+    <hr>
+    <h3>Reviews</h3>
+    <div id="reviews-list">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="media mb-4">
+                    <div class="media-body">
+                        <h5 class="mt-0">{% if review.title %}{{ review.title }}{% else %}Rating: {{ review.rating }}{% endif %}</h5>
+                        <div class="star-rating">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span class="full">&#9733;</span>
+                                {% else %}
+                                    <span>&#9734;</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p>{{ review.comment|linebreaks }}</p>
+                        <small class="text-muted">by {{ review.user.username }} on {{ review.created_at|date:"d M Y" }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet. Be the first to review!</p>
+        {% endif %}
+    </div>
+
+    <!-- Review Form -->
+    {% if user.is_authenticated %}
+        <hr>
+        <h4>Submit a Review</h4>
+        <form id="review-form" method="POST" action="{% url 'shop:add_pet_review' pet.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="ratingSelect">Rating</label>
+                <select id="ratingSelect" name="rating" class="form-control" required>
+                    <option value="" disabled selected>Select rating</option>
+                    {% for i in "12345" %}
+                        <option value="{{ i }}">{{ i }} Star{% if i != '1' %}s{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="titleInput">Title</label>
+                <input type="text" id="titleInput" name="title" class="form-control" maxlength="100" required>
+            </div>
+            <div class="form-group">
+                <label for="commentTextarea">Comment</label>
+                <textarea id="commentTextarea" name="comment" rows="4" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'accounts:login' %}">log in</a> to submit a review.</p>
+    {% endif %}
 </div>
 
+<!-- Scripts for AJAX Cart & Wishlist -->
 <script>
-// Add to Cart AJAX success handler updating cart badge dynamically and button toggle
 document.getElementById('btn-add-to-cart')?.addEventListener('click', async function(event) {
     event.preventDefault();
-
     const button = this;
     const url = "{% url 'carts:add_to_cart' %}";
     const model = button.dataset.model;
@@ -193,43 +296,22 @@ document.getElementById('btn-add-to-cart')?.addEventListener('click', async func
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}',
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
             },
             body: new URLSearchParams({ 'model': model, 'object_id': objectId }),
         });
-
         const data = await response.json();
-
         if (data.success) {
-            // Update cart count badge immediately
             const badge = document.getElementById('cart-count');
-            if (badge) {
-                badge.textContent = data.count > 0 ? data.count : '';
-                badge.style.display = data.count > 0 ? 'inline-block' : 'none';
-            }
-            localStorage.setItem('cartItemCount', data.count);
-
-            // Replace Add to Cart button with 'Added to Cart – View Cart' link
-            if (button) {
-                const viewCartBtn = document.createElement('a');
-                viewCartBtn.href = "{% url 'carts:view' %}";
-                viewCartBtn.className = 'btn btn-warning btn-lg mr-3 mb-2';
-                viewCartBtn.style.minWidth = '190px';
-                viewCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Added to Cart – View Cart';
-
-                button.parentNode.replaceChild(viewCartBtn, button);
-            }
-        } else {
-            console.error('Failed to add to cart:', data.error || 'Unknown error');
-            alert('Failed to add item to cart. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error adding to cart:', error);
-        alert('An error occurred while adding item to cart. Please try again.');
-    }
+            if (badge) { badge.textContent = data.count > 0 ? data.count : ''; badge.style.display = data.count > 0 ? 'inline-block' : 'none'; }
+            const viewCartBtn = document.createElement('a');
+            viewCartBtn.href = "{% url 'carts:view' %}";
+            viewCartBtn.className = 'btn btn-warning';
+            viewCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Added to Cart – View Cart';
+            button.parentNode.replaceChild(viewCartBtn, button);
+        } else { alert('Failed to add to cart.'); }
+    } catch (error) { console.error(error); alert('Error adding to cart.'); }
 });
 
-// Wishlist toggle AJAX updating wishlist count badge dynamically
 document.querySelectorAll('#wishlist-icon').forEach(icon => {
   icon.addEventListener('click', function() {
     const el = this;
@@ -248,22 +330,44 @@ document.querySelectorAll('#wishlist-icon').forEach(icon => {
         if(data.success){
           if(data.added){
             el.classList.remove('far');
-            el.classList.add('fas', 'added');
-            el.setAttribute('title', 'Remove from wishlist');
+            el.classList.add('fas','added');
           } else {
-            el.classList.remove('fas', 'added');
+            el.classList.remove('fas','added');
             el.classList.add('far');
-            el.setAttribute('title', 'Add to wishlist');
           }
           const wishlistCountElem = document.getElementById('wishlist-count');
           if(wishlistCountElem && data.count !== undefined){
             wishlistCountElem.textContent = data.count > 0 ? data.count : '';
             wishlistCountElem.style.display = data.count > 0 ? 'inline-block' : 'none';
-            localStorage.setItem('wishlistItemCount', data.count);
           }
         }
       });
   });
+});
+const shareIcon = document.getElementById('share-icon');
+
+shareIcon?.addEventListener('click', async () => {
+    const shareData = {
+        title: "{{ pet.name }}",
+        text: "Check out this pet on Dogstore!",
+        url: "{{ request.build_absolute_uri }}",
+    };
+
+    if (navigator.share) {
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    } else {
+        const dummyInput = document.createElement('input');
+        document.body.appendChild(dummyInput);
+        dummyInput.value = shareData.url;
+        dummyInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummyInput);
+        alert('Link copied to clipboard! You can now share it manually.');
+    }
 });
 </script>
 {% endblock %}

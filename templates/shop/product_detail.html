@@ -1,250 +1,284 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ product.name }} | Dogstore{% endblock %}
+{% block title %}{{ product.name }} Details{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row">
-
-    <!-- Product Image -->
-    <div class="col-md-5 mb-4">
-      {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
-      {% else %}
-        <img src="{% static 'images/product_placeholder.png' %}" alt="{{ product.name }}" class="img-fluid rounded shadow">
-      {% endif %}
-    </div>
-
-    <!-- Product Details -->
-    <div class="col-md-7">
-      <h1 class="fw-bold">{{ product.name }}</h1>
-      <p class="text-muted mb-1">
-        Category:
-        <a href="{% url 'shop:product_list_by_category' product.category.slug %}">{{ product.category.name }}</a>
-      </p>
-      <p class="text-muted mb-1">
-        Store:
-        <a href="{% url 'shop:store_detail' product.store.pk %}">{{ product.store.name }}</a>
-      </p>
-      <h3 class="text-primary mb-3">₹ {{ product.price|floatformat:2 }}</h3>
-
-      <div class="mb-4">
-        {% if product.description %}
-          <p>{{ product.description }}</p>
-        {% else %}
-          <p class="text-muted">No description available.</p>
-        {% endif %}
-      </div>
-
-      <!-- Action Buttons Row -->
-      <div class="d-flex align-items-center justify-content-start flex-nowrap mb-4" style="gap: 12px; overflow-x: auto;">
-
-        <!-- Buy Now -->
-        <a href="{% url 'shop:checkout' %}?model=product&item_id={{ product.pk }}"
-           class="btn btn-success btn-lg px-4 rounded-pill flex-shrink-0"
-           style="min-width: 170px;">
-          <i class="fas fa-bolt"></i> BUY NOW
-        </a>
-
-        <!-- Add to Cart -->
-        {% if in_cart %}
-          <a href="{% url 'carts:view' %}" 
-             class="btn btn-warning btn-lg px-4 rounded-pill flex-shrink-0"
-             style="min-width: 240px;">
-            <i class="fas fa-shopping-cart"></i> ADDED TO CART – VIEW CART
-          </a>
-        {% else %}
-          <button id="btn-add-to-cart"
-                  class="btn btn-primary btn-lg px-4 rounded-pill flex-shrink-0"
-                  data-model="product" data-object-id="{{ product.id }}"
-                  data-url="{% url 'carts:add_to_cart' %}"
-                  style="min-width: 180px;">
-            <i class="fas fa-cart-plus"></i> ADD TO CART
-          </button>
-        {% endif %}
-
-        <!-- Wishlist Icon -->
-        {% if user.is_authenticated %}
-          <button id="wishlist-icon"
-                  class="btn btn-outline-danger btn-lg rounded-pill d-flex align-items-center justify-content-center flex-shrink-0"
-                  style="width: 56px; height: 56px;"
-                  title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
-                  data-object-id="{{ product.id }}"
-                  data-model="product"
-                  data-url="{% url 'wishlist:toggle_wishlist' %}">
-            <i class="{% if is_in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
-          </button>
-        {% else %}
-          <a href="{% url 'accounts:login' %}"
-             class="btn btn-outline-danger btn-lg rounded-pill d-flex align-items-center justify-content-center flex-shrink-0"
-             style="width: 56px; height: 56px;"
-             title="Login to add to wishlist">
-            <i class="far fa-heart"></i>
-          </a>
-        {% endif %}
-
-        <!-- Share -->
-        <button type="button"
-                class="btn btn-outline-secondary btn-lg rounded-pill d-flex align-items-center justify-content-center flex-shrink-0"
-                style="width: 56px; height: 56px;"
-                title="Share"
-                data-bs-toggle="modal"
-                data-bs-target="#shareModal">
-          <i class="fas fa-share-alt"></i>
-        </button>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Share Modal -->
-<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Share {{ product.name }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="input-group mb-3">
-          <input type="text" id="shareLink" class="form-control" readonly value="{{ request.build_absolute_uri }}">
-          <button class="btn btn-outline-primary" type="button" onclick="copyShareLink()">Copy</button>
-        </div>
-        <div>
-          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
-             target="_blank" class="btn btn-primary btn-sm me-2">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ product.name }}" 
-             target="_blank" class="btn btn-info btn-sm me-2">
-            <i class="fab fa-twitter"></i>
-          </a>
-          <a href="https://wa.me/?text={{ request.build_absolute_uri }}" 
-             target="_blank" class="btn btn-success btn-sm">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Scripts -->
-<script>
-function copyShareLink() {
-  navigator.clipboard.writeText(document.getElementById("shareLink").value)
-    .then(() => alert("Link copied to clipboard!"));
+<!-- Custom Styles -->
+<style>
+/* Fonts & Colors */
+body, h1, h2, h3, h4, h5, h6, p {
+    font-family: 'Inter', 'Roboto', sans-serif;
+    color: #2c3e50;
 }
 
-// Add to Cart AJAX
-document.getElementById('btn-add-to-cart')?.addEventListener('click', async function(){
+h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Container for Image + Info */
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+/* Image Styling */
+.product-image {
+    flex: 0 0 350px;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.product-image img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.product-image:hover {
+    transform: scale(1.05);
+}
+
+/* Info Section */
+.product-info {
+    flex: 1 1 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.product-info h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-info p {
+    margin: 0.3rem 0;
+}
+
+.price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #27ae60;
+    margin: 0.8rem 0;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+.action-buttons .btn {
+    padding: 12px 22px;
+    font-size: 1rem;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-icon {
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: #34495e;
+}
+
+.btn-icon:hover {
+    transform: translateY(-2px);
+}
+
+#wishlist-icon.added {
+    color: #e74c3c !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .product-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .product-info {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="container my-5">
+
+    <!-- Product Image + Info -->
+    <div class="product-container">
+
+        <!-- Image -->
+        <div class="product-image">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img src="{% static 'images/product_placeholder.png' %}" alt="{{ product.name }}">
+            {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="product-info">
+            <h2>{{ product.name }}</h2>
+            <p><strong>Category:</strong> {{ product.category.name }}</p>
+            <p><strong>Store:</strong> {{ product.store.name }}</p>
+            <p class="price">₹ {{ product.price|floatformat:2 }}</p>
+            {% if product.description %}
+                <p>{{ product.description|linebreaks }}</p>
+            {% else %}
+                <p class="text-muted">No description available.</p>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <!-- Buy Now -->
+                <a href="{% url 'shop:checkout' %}?model=product&item_id={{ product.pk }}" class="btn btn-success">Buy Now</a>
+
+                <!-- Add to Cart -->
+                {% if in_cart %}
+                    <a href="{% url 'carts:view' %}" class="btn btn-warning">
+                        <i class="fas fa-shopping-cart"></i> Added to Cart – View Cart
+                    </a>
+                {% else %}
+                    <button id="btn-add-to-cart" class="btn btn-primary" data-model="product" data-object-id="{{ product.id }}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                {% endif %}
+
+                <!-- Wishlist -->
+                {% if user.is_authenticated %}
+                    <i id="wishlist-icon"
+                        class="{% if is_in_wishlist %}fas{% else %}far{% endif %} fa-heart btn-icon"
+                        title="{% if is_in_wishlist %}Remove from wishlist{% else %}Add to wishlist{% endif %}"
+                        data-object-id="{{ product.id }}"
+                        data-model="product"
+                        data-url="{% url 'wishlist:toggle_wishlist' %}"></i>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}" title="Login to add to wishlist">
+                        <i class="far fa-heart btn-icon"></i>
+                    </a>
+                {% endif %}
+
+                <!-- Share -->
+                <i id="share-icon" class="fas fa-share-alt btn-icon" title="Share this item"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Scripts for AJAX Cart & Wishlist -->
+<script>
+document.getElementById('btn-add-to-cart')?.addEventListener('click', async function(event) {
+    event.preventDefault();
     const button = this;
-    const resp = await fetch(button.dataset.url, {
+    const url = "{% url 'carts:add_to_cart' %}";
+    const model = button.dataset.model;
+    const objectId = button.dataset.objectId;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ 'model': model, 'object_id': objectId }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            const badge = document.getElementById('cart-count');
+            if (badge) { badge.textContent = data.count > 0 ? data.count : ''; badge.style.display = data.count > 0 ? 'inline-block' : 'none'; }
+            const viewCartBtn = document.createElement('a');
+            viewCartBtn.href = "{% url 'carts:view' %}";
+            viewCartBtn.className = 'btn btn-warning';
+            viewCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i> Added to Cart – View Cart';
+            button.parentNode.replaceChild(viewCartBtn, button);
+        } else { alert('Failed to add to cart.'); }
+    } catch (error) { console.error(error); alert('Error adding to cart.'); }
+});
+
+document.querySelectorAll('#wishlist-icon').forEach(icon => {
+  icon.addEventListener('click', function() {
+    const el = this;
+    fetch(el.dataset.url, {
       method: 'POST',
       headers: {
         'X-CSRFToken': '{{ csrf_token }}',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({ model: button.dataset.model, object_id: button.dataset.objectId }),
-    });
-    const data = await resp.json();
-    if (data.success) {
-      const badge = document.getElementById('cart-count');
-      if (badge) {
-        badge.textContent = data.count > 0 ? data.count : '';
-        badge.style.display = data.count > 0 ? 'inline-block' : 'none';
-      }
-      localStorage.setItem('cartItemCount', data.count);
-      button.outerHTML = `<a href="{% url 'carts:view' %}" class="btn btn-warning btn-lg px-4 rounded-pill flex-shrink-0" style="min-width: 240px;">
-                            <i class="fas fa-shopping-cart"></i> ADDED TO CART – VIEW CART
-                          </a>`;
-    }
-});
-
-// Wishlist toggle AJAX updating wishlist count badge dynamically
-document.getElementById('wishlist-icon')?.addEventListener('click', function() {
-  const btn = this;
-  const icon = btn.querySelector('i');
-  fetch(btn.dataset.url, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': '{{ csrf_token }}',
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      object_id: btn.dataset.objectId,
-      model: btn.dataset.model,
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      if (data.added) {
-        icon.classList.remove('far');
-        icon.classList.add('fas');
-        btn.classList.remove('btn-outline-danger');
-        btn.classList.add('btn-danger');
-        btn.setAttribute('title', 'Remove from wishlist');
-      } else {
-        icon.classList.remove('fas');
-        icon.classList.add('far');
-        btn.classList.remove('btn-danger');
-        btn.classList.add('btn-outline-danger');
-        btn.setAttribute('title', 'Add to wishlist');
-      }
-
-      // Optionally update wishlist count badge if you have one
-      const wishlistCountElem = document.getElementById('wishlist-count');
-      if (wishlistCountElem && data.count !== undefined) {
-        wishlistCountElem.textContent = data.count > 0 ? data.count : '';
-        wishlistCountElem.style.display = data.count > 0 ? 'inline-block' : 'none';
-      }
-    }
-  })
-  .catch(error => {
-    console.error('Wishlist toggle error:', error);
-    alert('Failed to toggle wishlist. Please try again.');
+      body: new URLSearchParams({
+        'object_id': el.dataset.objectId,
+        'model': el.dataset.model,
+      }),
+    }).then(res => res.json())
+      .then(data => {
+        if(data.success){
+          if(data.added){
+            el.classList.remove('far');
+            el.classList.add('fas','added');
+          } else {
+            el.classList.remove('fas','added');
+            el.classList.add('far');
+          }
+          const wishlistCountElem = document.getElementById('wishlist-count');
+          if(wishlistCountElem && data.count !== undefined){
+            wishlistCountElem.textContent = data.count > 0 ? data.count : '';
+            wishlistCountElem.style.display = data.count > 0 ? 'inline-block' : 'none';
+          }
+        }
+      });
   });
 });
+const shareIcon = document.getElementById('share-icon');
 
+shareIcon?.addEventListener('click', async () => {
+    const shareData = {
+        title: "{{ product.name }}",
+        text: "Check out this product on Dogstore!",
+        url: "{{ request.build_absolute_uri }}",
+    };
+
+    if (navigator.share) {
+        // Mobile / supported browsers
+        try {
+            await navigator.share(shareData);
+            console.log('Shared successfully');
+        } catch (err) {
+            console.error('Error sharing:', err);
+        }
+    } else {
+        // Fallback for desktop: show prompt to copy link
+        const dummyInput = document.createElement('input');
+        document.body.appendChild(dummyInput);
+        dummyInput.value = shareData.url;
+        dummyInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummyInput);
+        alert('Link copied to clipboard! You can now share it manually.');
+    }
+});
 </script>
-<style>
-  /* Remove borders and background for wishlist and share icon buttons */
-#wishlist-icon,
-button[data-bs-target="#shareModal"] {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  width: 36px !important;
-  height: 36px !important;
-  padding: 0 !important;
-}
 
-/* Wishlist heart icon - red */
-#wishlist-icon i {
-  font-size: 1.6rem;
-  color: #e74c3c; /* heart red */
-  transition: color 0.3s ease;
-}
-
-/* Share icon - black */
-button[data-bs-target="#shareModal"] i {
-  font-size: 1.6rem;
-  color: black;  /* black color */
-  transition: color 0.3s ease;
-}
-
-/* Heart icon hover */
-#wishlist-icon:hover i {
-  color: #c0392b;
-}
-
-/* Share icon hover */
-button[data-bs-target="#shareModal"]:hover i {
-  color: #555;
-}
-
-</style>
 {% endblock %}
