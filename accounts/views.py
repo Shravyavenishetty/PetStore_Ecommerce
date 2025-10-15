@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse
 
 from .forms import RegistrationForm
 from .models import Account
@@ -10,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from django.utils.html import strip_tags
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
@@ -17,6 +17,7 @@ from carts.views import _cart_id
 from carts.models import Cart, CartItem
 
 import requests
+
 
 def register(request):
     if request.method == 'POST':
@@ -40,6 +41,7 @@ def register(request):
             user.is_active = False
             user.save()
 
+            # Send account activation email
             current_site = get_current_site(request)
             mail_subject = 'Please activate your Dogstore account'
             message = render_to_string('accounts/account_verification_email.html', {
@@ -48,24 +50,32 @@ def register(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
+
+            # Send HTML email
+            plain_message = strip_tags(message)
             to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
+            send_email = EmailMessage(mail_subject, plain_message, to=[to_email])
+            send_email.content_subtype = "html"  # <- enables HTML content
             send_email.send(fail_silently=False)
 
-            messages.success(request, 'Registration successful! Please check your email to activate your account.')
-            return redirect('/accounts/login/?command=verification&email='+email)
+            messages.success(
+                request, 'Registration successful! Please check your email to activate your account.'
+            )
+            return redirect('/accounts/login/?command=verification&email=' + email)
         else:
             messages.error(request, 'Invalid registration details.')
     else:
         form = RegistrationForm()
+
     context = {'form': form}
     return render(request, 'accounts/register.html', context)
+
 
 def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
@@ -77,13 +87,13 @@ def activate(request, uidb64, token):
         messages.error(request, 'Activation link is invalid!')
         return redirect('accounts:register')
 
+
 def login(request):
     if request.method == "POST":
         email = request.POST.get('email')
         password = request.POST.get('password')
 
         user = auth.authenticate(email=email, password=password)
-
         if user is not None:
             try:
                 cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -115,15 +125,18 @@ def login(request):
 
     return render(request, 'accounts/login.html')
 
+
 @login_required(login_url='accounts:login')
 def logout(request):
     auth.logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('accounts:login')
 
+
 @login_required(login_url='accounts:login')
 def dashboard(request):
     return render(request, 'accounts/dashboard.html')
+
 
 def forgotPassword(request):
     if request.method == 'POST':
@@ -139,8 +152,11 @@ def forgotPassword(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
+
+            # Send HTML email
+            plain_message = strip_tags(message)
+            send_email = EmailMessage(mail_subject, plain_message, to=[email])
+            send_email.content_subtype = "html"
             send_email.send(fail_silently=False)
 
             messages.success(request, 'Password reset email sent. Please check your inbox.')
@@ -151,11 +167,12 @@ def forgotPassword(request):
 
     return render(request, 'accounts/forgotPassword.html')
 
+
 def resetpassword_validate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = Account._default_manager.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
@@ -165,6 +182,7 @@ def resetpassword_validate(request, uidb64, token):
     else:
         messages.error(request, 'This reset link has expired or is invalid.')
         return redirect('accounts:forgotPassword')
+
 
 def resetPassword(request):
     if request.method == 'POST':
