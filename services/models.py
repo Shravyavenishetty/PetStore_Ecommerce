@@ -19,11 +19,29 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+    
+class ServiceCenter(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.TextField()
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+
+    def __str__(self):
+        return self.name
 
 class Booking(models.Model):
+    SERVICE_LOCATION_CHOICES = [
+        ('center', 'Service Center'),
+        ('home', 'Home Service'),
+    ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookings', null=True, blank=True)
     email = models.EmailField(max_length=254,blank=True, null=True, help_text="If not logged in, please provide your email.")
     service = models.ForeignKey(Service, on_delete=models.CASCADE,related_name='bookings')
+    service_location = models.CharField(max_length=10, choices=SERVICE_LOCATION_CHOICES,default='center')
+    service_center = models.ForeignKey(ServiceCenter, on_delete=models.SET_NULL, null=True, blank=True)
+    home_address = models.TextField(blank=True, null=True)
+    contact_number = models.CharField(max_length=15, blank=True, null=True)
+
     pet_name = models.CharField(max_length=100)
     pet_type = models.CharField(max_length=100)
     booking_date = models.DateField()

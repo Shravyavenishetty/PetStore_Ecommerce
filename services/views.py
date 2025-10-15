@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Service,Booking
+from .models import Service,Booking, ServiceCenter
 from django.core.paginator import Paginator
 from .forms import BookingForm
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.http import JsonResponse
+import math
 
 def service_list(request):
     services_list = Service.objects.all()
@@ -81,3 +83,40 @@ def payment_success(request, booking_id):
     booking.save()
     messages.success(request, 'Payment successful! Thank you.')
     return redirect('services:booking_history')
+
+def nearby_service_centers(request):
+    try:
+        lat = float(request.GET.get('lat'))
+        lng = float(request.GET.get('lng'))
+        radius_km = float(request.GET.get('radius', 10))  # default 10km radius
+    except (TypeError, ValueError):
+        return JsonResponse({'error': 'Invalid parameters'}, status=400)
+
+    centers = ServiceCenter.objects.all()
+    nearby_centers = []
+
+    # Simple radius filter using haversine formula
+    def haversine(lat1, lon1, lat2, lon2):
+        R = 6371  # Earth radius in km
+        d_lat = math.radians(lat2 - lat1)
+        d_lon = math.radians(lon2 - lon1)
+        a = (math.sin(d_lat / 2) ** 2 +
+             math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+             math.sin(d_lon / 2) ** 2)
+        c = 2 * math.asin(math.sqrt(a))
+        return R * c
+
+    for center in centers:
+        distance = haversine(lat, lng, float(center.latitude), float(center.longitude))
+        if distance <= radius_km:
+            nearby_centers.append({
+                'id': center.id,
+                'name': center.name,
+                'address': center.address,
+                'latitude': str(center.latitude),
+                'longitude': str(center.longitude),
+                'distance_km': round(distance, 2),
+            })
+
+    nearby_centers = sorted(nearby_centers, key=lambda x: x['distance_km'])
+    return JsonResponse({'centers': nearby_centers})
