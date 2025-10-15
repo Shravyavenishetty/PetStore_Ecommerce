@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from services.models import Service
 
 def home(request):
-    return render(request,'home.html')
+    services = Service.objects.all()
+    return render(request,'home.html',{'services': services})

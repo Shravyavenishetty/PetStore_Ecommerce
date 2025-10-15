@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center py-5">
+  <h2>Thank you for your booking!</h2>
+  <p>We have received your request and will contact you soon.</p>
+  <a href="{% url 'services:book_service' %}" class="btn btn-primary mt-3">Book Another Service</a>
+  <a href="{% url 'services:booking_history' %}" class="btn btn-outline-secondary mt-3 ms-2">View Booking History</a>
+</div>
+{% endblock %}

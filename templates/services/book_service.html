@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<style>
+  .booking-card {
+    background: #fff;
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 32px rgba(42, 187, 90, 0.09);
+    padding: 2rem 2rem 1.5rem 2rem;
+    margin-top: 1.5rem;
+    border: none;
+  }
+  .booking-card .form-label {
+    font-weight: 600;
+    color: #145436;
+    margin-bottom: 0.25rem;
+  }
+  .booking-card input,
+  .booking-card select,
+  .booking-card textarea {
+    border-radius: 0.6rem;
+    border: 1px solid #e0e5ea;
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    background: #f8fdfb;
+  }
+  .booking-card input:focus,
+  .booking-card select:focus,
+  .booking-card textarea:focus {
+    border-color: #3bd16f;
+    box-shadow: 0 0 0 0.15rem #3bd16f2b;
+    background: #fff;
+  }
+  .booking-card button.btn-success {
+    background: linear-gradient(90deg, #42e695 0, #3bb2b8 100%);
+    border: none;
+    font-size: 1.18rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+    border-radius: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-top: 1rem;
+  }
+  .booking-card button.btn-success:hover {
+    background: linear-gradient(90deg, #2fec8b 20%, #2aaabe 100%);
+  }
+  .booking-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #173d2e;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="booking-title">Book a Service</div>
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card booking-card">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="{{ form.service.id_for_label }}" class="form-label">Select Service</label>
+            {{ form.service|add_class:"form-control" }}
+            {{ form.service.errors }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+            {{ form.email|add_class:"form-control" }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.pet_name.id_for_label }}" class="form-label">Pet Name</label>
+            {{ form.pet_name|add_class:"form-control" }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.pet_type.id_for_label }}" class="form-label">Pet Type</label>
+            {{ form.pet_type|add_class:"form-control" }}
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="{{ form.booking_date.id_for_label }}" class="form-label">Booking Date</label>
+              {{ form.booking_date|add_class:"form-control" }}
+            </div>
+            <div class="col">
+              <label for="{{ form.booking_time.id_for_label }}" class="form-label">Booking Time</label>
+              {{ form.booking_time|add_class:"form-control" }}
+            </div>
+          </div>
+          <div class="mb-4">
+            <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes</label>
+            {{ form.notes|add_class:"form-control" }}
+          </div>
+          <button type="submit" class="btn btn-success w-100">BOOK NOW</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
